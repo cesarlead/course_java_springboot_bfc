@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering Advanced Java for Modern Banking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #E0F7FA;
+        }
+
+        .flowchart-step {
+            border: 2px solid #0073E6;
+            background-color: #FFFFFF;
+            color: #004AAD;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        .hierarchy-box {
+            border: 2px solid;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+
+        .flowchart-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0073E6;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .pro-tip {
+            background-color: #e6f7ff;
+            border-left: 4px solid #0073E6;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .code-snippet {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            font-size: 0.875rem;
+        }
+
+        .code-keyword { color: #ff7b72; }
+        .code-type { color: #d2a8ff; }
+        .code-class { color: #a5d6ff; }
+        .code-comment { color: #8b949e; }
+        .code-string { color: #a5d6ff; }
+        .code-method { color: #d2a8ff; }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .TextStrong {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #004AAD;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body class="text-[#004AAD]">
+
+<div class="container mx-auto p-4 md:p-8">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-[#004AAD] mb-2">Java: De la POO a la Programación Funcional</h1>
+        <h2 class="TextStrong">GlobalDesk | César Fernández – Ingeniero de Software (Java & Spring Boot)</h2>
+    </header>
+
+    <main class="space-y-12">
+
+        <section id="classes-objects">
+            <h2 class="text-3xl font-bold text-center mb-4">Clases y Objetos: Los Cimientos de la POO</h2>
+            <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">
+                En la programación orientada a objetos, una clase es el plano para crear objetos. En un sistema
+                bancario, conceptos como "Cliente", "Cuenta" o "Transacción" se modelan como clases para crear
+                instancias (objetos) manejables y reutilizables.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                <div class="bg-white rounded-lg shadow-lg p-6 border-t-4 border-[#004AAD]">
+                    <h3 class="text-xl font-bold text-center mb-4">La Clase: El Plano Maestro</h3>
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <p class="font-mono font-bold text-lg">class CuentaBancaria {</p>
+                        <div class="pl-4 mt-2">
+                            <p class="text-gray-500 font-mono">// Atributos (Estado)</p>
+                            <p class="font-mono">String numeroCuenta;</p>
+                            <p class="font-mono">String titular;</p>
+                            <p class="font-mono">double saldo;</p>
+                            <br>
+                            <p class="text-gray-500 font-mono">// Métodos (Comportamiento)</p>
+                            <p class="font-mono">depositar(monto);</p>
+                            <p class="font-mono">retirar(monto);</p>
+                            <p class="font-mono">consultarSaldo();</p>
+                        </div>
+                        <p class="font-mono font-bold text-lg">}</p>
+                    </div>
+                    <div class="pro-tip mt-4">
+                        <p><span class="font-bold">Analogía Clave:</span> La clase es el plano arquitectónico. Define la
+                            estructura y las capacidades, pero no es el edificio en sí.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6 border-t-4 border-[#0073E6]">
+                    <h3 class="text-xl font-bold text-center mb-4">El Objeto: Instancia Real</h3>
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 p-4 rounded-lg shadow">
+                            <p class="font-bold text-lg">Objeto: cuentaDeCesar</p>
+                            <p class="font-mono text-sm">numeroCuenta: "ES...1234"</p>
+                            <p class="font-mono text-sm">titular: "Cesar Fernandez"</p>
+                            <p class="font-mono text-sm">saldo: 1500.75</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg shadow">
+                            <p class="font-bold text-lg">Objeto: cuentaDeMaria</p>
+                            <p class="font-mono text-sm">numeroCuenta: "ES...5678"</p>
+                            <p class="font-mono text-sm">titular: "María García"</p>
+                            <p class="font-mono text-sm">saldo: 8250.20</p>
+                        </div>
+                    </div>
+                    <div class="pro-tip mt-4">
+                        <p><span class="font-bold">¿Qué sucede al crear un objeto?</span> Al usar `new CuentaBancaria()`, Java:</p>
+                        <ol class="list-decimal list-inside text-sm">
+                            <li><b>Asigna memoria</b> en el Heap para el nuevo objeto.</li>
+                            <li><b>Ejecuta el constructor</b> de la clase para inicializar su estado.</li>
+                            <li><b>Devuelve una referencia</b> a esa dirección de memoria, que se guarda en la variable.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="oop-pillars">
+            <h2 class="text-3xl font-bold text-center mb-8">Pilares de la POO</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <div class="text-5xl mb-4">🛡️</div>
+                    <h3 class="text-xl font-bold mb-2">Encapsulamiento</h3>
+                    <p class="text-gray-600">Protege los datos sensibles de una <code
+                            class="text-sm">CuentaBancaria</code>, como el <code class="text-sm">saldo</code>,
+                        exponiendo solo métodos seguros como <code class="text-sm">depositar()</code> y <code
+                                class="text-sm">retirar()</code>.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <div class="text-5xl mb-4">🔗</div>
+                    <h3 class="text-xl font-bold mb-2">Herencia</h3>
+                    <p class="text-gray-600">Crea tipos de cuentas especializadas (<code
+                            class="text-sm">CuentaAhorro</code>, <code class="text-sm">CuentaCorriente</code>) que
+                        heredan propiedades y comportamientos base de una <code class="text-sm">ProductoBancario</code> abstracto.
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <div class="text-5xl mb-4">🎭</div>
+                    <h3 class="text-xl font-bold mb-2">Polimorfismo</h3>
+                    <p class="text-gray-600">Permite procesar diferentes tipos de transacciones (<code class="text-sm">Deposito</code>,
+                        <code class="text-sm">Retiro</code>, <code class="text-sm">Transferencia</code>) a través de una
+                        interfaz común <code class="text-sm">Transaccion.ejecutar()</code>.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                    <div class="text-5xl mb-4">👻</div>
+                    <h3 class="text-xl font-bold mb-2">Abstracción</h3>
+                    <p class="text-gray-600">Define contratos como la interfaz <code class="text-sm">Auditable</code> o clases base como <code class="text-sm">ProductoBancario</code> para ocultar la complejidad interna.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="abstraction">
+            <h2 class="text-3xl font-bold text-center mb-8">Abstracción: Interfaces y Clases Abstractas</h2>
+            <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">
+                La abstracción oculta la complejidad innecesaria y expone solo las características esenciales. En Java, se logra principalmente a través de interfaces y clases abstractas, permitiendo crear sistemas flexibles y escalables.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-center mb-4">Interfaces: El Contrato</h3>
+                    <p class="mb-4 text-gray-600">Una interfaz define un conjunto de métodos que una clase <strong>debe</strong> implementar. Es un contrato que garantiza que un objeto tendrá ciertas capacidades, sin importar cómo las implemente.</p>
+                    <div class="code-snippet">
+<pre><code-comment>// Contrato que obliga a cualquier clase que lo implemente a ser auditable.</code-comment>
+<code-keyword>public interface</code-keyword> <code-class>Auditable</code-class> {
+    <code-type>String</code-type> <code-method>generarLog</code-method>();
+    <code-type>String</code-type> <code-method>getIdentificadorAuditoria</code-method>();
+}
+
+<code-keyword>public class</code-keyword> <code-class>Transferencia</code-class> <code-keyword>implements</code-keyword> <code-class>Auditable</code-class> {
+    <code-comment>// ... otros atributos y métodos</code-comment>
+
+    @Override
+    <code-keyword>public</code-keyword> <code-type>String</code-type> <code-method>generarLog</code-method>() {
+        <code-keyword>return</code-keyword> <code-string>"Transferencia realizada con éxito."</code-string>;
+    }
+    <code-comment>// ... implementación de getIdentificadorAuditoria</code-comment>
+}</code></pre>
+                    </div>
+                    <div class="pro-tip"><p><span class="font-bold">Cuándo usarla:</span> Para definir capacidades que pueden ser compartidas por clases no relacionadas (ej. `Auditable`, `Exportable`, `Notificable`). Una clase puede implementar múltiples interfaces.</p></div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-center mb-4">Clases Abstractas: La Base Común</h3>
+                    <p class="mb-4 text-gray-600">Una clase abstracta es una clase "incompleta" que no se puede instanciar directamente. Sirve como base para otras clases, compartiendo atributos y métodos comunes, pero dejando que las subclases definan los detalles específicos.</p>
+                    <div class="code-snippet">
+<pre><code-comment>// Base para todas las cuentas. Contiene lógica común.</code-comment>
+<code-keyword>public abstract class</code-keyword> <code-class>ProductoBancario</code-class> {
+    <code-keyword>protected</code-keyword> <code-type>double</code-type> saldo;
+
+    <code-keyword>public void</code-keyword> <code-method>depositar</code-method>(<code-type>double</code-type> monto) {
+        <code-keyword>this</code-keyword>.saldo += monto;
+    }
+
+    <code-comment>// Cada producto debe definir cómo calcula sus beneficios.</code-comment>
+    <code-keyword>public abstract</code-keyword> <code-type>double</code-type> <code-method>calcularBeneficiosAnuales</code-method>();
+}
+
+<code-keyword>public class</code-keyword> <code-class>CuentaAhorro</code-class> <code-keyword>extends</code-keyword> <code-class>ProductoBancario</code-class> {
+    @Override
+    <code-keyword>public</code-keyword> <code-type>double</code-type> <code-method>calcularBeneficiosAnuales</code-method>() {
+        <code-keyword>return</code-keyword> saldo * 0.02; <code-comment>// 2% de interés</code-comment>
+    }
+}</code></pre>
+                    </div>
+                    <div class="pro-tip"><p><span class="font-bold">Cuándo usarla:</span> Cuando varias clases comparten un estado o comportamiento base (relación "es un..."). Ideal para evitar código duplicado en una jerarquía de clases relacionadas.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="exception-handling">
+            <h2 class="text-3xl font-bold text-center mb-4">Manejo de Excepciones: La Red de Seguridad del Sistema</h2>
+            <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">En el sector bancario, un error no gestionado
+                puede costar millones. El manejo de excepciones no es opcional, es un requisito crítico para la
+                estabilidad y la confianza.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-center">Jerarquía de Excepciones en Java</h3>
+                    <div class="space-y-2">
+                        <div class="hierarchy-box border-gray-700 bg-gray-200">Throwable</div>
+                        <div class="w-full flex justify-center"><div class="h-6 w-px bg-gray-500"></div></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="h-6 w-px bg-gray-500"></div>
+                                <div class="hierarchy-box border-red-600 bg-red-100 w-full">Error</div>
+                                <div class="text-xs text-center mt-1 text-red-700">Irrecuperables<br>(JVM, OutOfMemoryError)</div>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="h-6 w-px bg-gray-500"></div>
+                                <div class="hierarchy-box border-blue-600 bg-blue-100 w-full">Exception</div>
+                                <div class="text-xs text-center mt-1 text-blue-700">Recuperables</div>
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-end pr-8 md:pr-16"><div class="h-6 w-px bg-blue-500"></div></div>
+                        <div class="grid grid-cols-2 gap-4 ml-auto w-1/2">
+                            <div class="flex flex-col items-center">
+                                <div class="h-6 w-px bg-blue-500"></div>
+                                <div class="hierarchy-box border-purple-600 bg-purple-100 w-full text-xs">RuntimeException</div>
+                                <div class="text-xs text-center mt-1 text-purple-700">Unchecked<br>(Errores de lógica)</div>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="h-6 w-px bg-blue-500"></div>
+                                <div class="hierarchy-box border-green-600 bg-green-100 w-full text-xs">IOException / SQLException</div>
+                                <div class="text-xs text-center mt-1 text-green-700">Checked<br>(Obligatorio manejar)</div>
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-end pr-8 md:pr-16">
+                            <div class="w-1/2 grid grid-cols-2 gap-4">
+                                <div></div>
+                                <div class="flex flex-col items-center">
+                                    <div class="h-6 w-px bg-green-500"></div>
+                                    <div class="hierarchy-box border-green-800 bg-green-200 w-full text-xs">FondosInsuficientes...</div>
+                                    <div class="text-xs text-center mt-1 text-green-800">Custom Checked</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-center">Excepciones Personalizadas</h3>
+                    <p class="text-gray-600 mb-4">Crear excepciones específicas para el dominio del negocio mejora la
+                        claridad y el manejo de errores. Una excepción como <code class="text-sm">FondosInsuficientesException</code>
+                        es mucho más descriptiva que una genérica <code class="text-sm">Exception</code>.
+                    </p>
+                    <div class="code-snippet">
+<pre><code-comment>// Una excepción 'checked' porque el cliente del código DEBE manejarla.</code-comment>
+<code-keyword>public class</code-keyword> <code-class>FondosInsuficientesException</code-class> <code-keyword>extends</code-keyword> <code-class>Exception</code-class> {
+    <code-keyword>public</code-keyword> <code-method>FondosInsuficientesException</code-method>(<code-type>String</code-type> mensaje) {
+        <code-keyword>super</code-keyword>(mensaje);
+    }
+}</code></pre>
+                    </div>
+                    <div class="pro-tip">
+                        <p><span class="font-bold">Regla de Oro:</span> Usa excepciones 'checked' (que heredan de <code
+                                class="text-sm">Exception</code>) para errores recuperables que el cliente del código
+                            debe manejar (ej. fondos insuficientes). Usa 'unchecked' (<code class="text-sm">RuntimeException</code>)
+                            para errores de programación (ej. <code class="text-sm">NullPointerException</code>) que nunca deberían ocurrir.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="collections">
+            <h2 class="text-3xl font-bold text-center mb-4">Framework de Colecciones: Organizando Datos Financieros</h2>
+            <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">Desde listas de transacciones hasta mapas de
+                clientes, las colecciones son las estructuras de datos fundamentales para cualquier aplicación
+                bancaria.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4 text-center">Tipos de Colecciones y su Uso en Banca</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                            <tr class="border-b-2 border-[#0073E6]">
+                                <th class="p-2">Colección</th>
+                                <th class="p-2">Características Clave</th>
+                                <th class="p-2">Caso de Uso Bancario</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="border-b">
+                                <td class="p-2 font-bold">List (<code class="text-sm">ArrayList</code>)</td>
+                                <td class="p-2">Ordenada, permite duplicados, acceso por índice.</td>
+                                <td class="p-2">Almacenar el historial de transacciones de una cuenta, en orden
+                                    cronológico.
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-2 font-bold">Set (<code class="text-sm">HashSet</code>)</td>
+                                <td class="p-2">No ordenada, no permite duplicados.</td>
+                                <td class="p-2">Guardar identificadores únicos de clientes para una campaña de
+                                    marketing.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-bold">Map (<code class="text-sm">HashMap</code>)</td>
+                                <td class="p-2">Pares clave-valor, claves únicas.</td>
+                                <td class="p-2">Asociar un número de cuenta (clave) con el objeto <code class="text-sm">Cuenta</code>
+                                    completo (valor) para un acceso rápido.
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pro-tip">
+                        <p><span class="font-bold">Consideración de Rendimiento:</span> <code
+                                class="text-sm">ArrayList</code> es rápido para iterar. <code class="text-sm">HashMap</code> ofrece una recuperación casi
+                            instantánea (O(1)) si conoces la clave. Elige siempre la colección que mejor se adapte al
+                            patrón de acceso a los datos.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-center">
+                    <h3 class="text-xl font-bold mb-4 text-center">Uso Típico de Colecciones</h3>
+                    <div class="chart-container">
+                        <canvas id="collectionsChart"></canvas>
+                    </div>
+                    <p class="text-center text-gray-600 mt-4">Los <code class="text-sm">Map</code> son cruciales para la
+                        recuperación rápida de datos, mientras que las <code class="text-sm">List</code> son
+                        omnipresentes para manejar secuencias de eventos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="streams-lambdas">
+            <h2 class="text-3xl font-bold text-center mb-4">Streams y Lambdas: Procesamiento de Datos a Alta
+                Velocidad</h2>
+            <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">El futuro del procesamiento de datos en Java.
+                Los Streams, impulsados por lambdas e interfaces funcionales, permiten escribir código más limpio, declarativo y paralelizable, ideal para
+                analizar grandes volúmenes de transacciones financieras.</p>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4 text-center">La Base: Interfaces Funcionales</h3>
+                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-6">Una interfaz funcional es una interfaz con <strong>un solo método abstracto</strong>. Actúa como el "tipo" de una expresión lambda. Java provee un conjunto de ellas en el paquete `java.util.function` para los casos de uso más comunes.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full max-w-4xl mx-auto text-left">
+                        <thead>
+                        <tr class="border-b-2 border-[#0073E6]">
+                            <th class="p-2">Interfaz Funcional</th>
+                            <th class="p-2">Método Abstracto</th>
+                            <th class="p-2">Uso en Streams</th>
+                            <th class="p-2">Ejemplo Lambda</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="border-b">
+                            <td class="p-2 font-bold">Predicate&lt;T&gt;</td>
+                            <td class="p-2 font-mono">boolean test(T t)</td>
+                            <td class="p-2">`filter()`</td>
+                            <td class="p-2 font-mono text-sm">`t -> t.getMonto() > 1000`</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-2 font-bold">Function&lt;T, R&gt;</td>
+                            <td class="p-2 font-mono">R apply(T t)</td>
+                            <td class="p-2">`map()`</td>
+                            <td class="p-2 font-mono text-sm">`t -> t.getTitular()`</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 font-bold">Consumer&lt;T&gt;</td>
+                            <td class="p-2 font-mono">void accept(T t)</td>
+                            <td class="p-2">`forEach()`</td>
+                            <td class="p-2 font-mono text-sm">`t -> System.out.println(t)`</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">Antes y Después: Sumar Transacciones de Alto Valor</h3>
+                    <p class="text-gray-600 mb-2"><strong>Método Tradicional (Bucle For):</strong></p>
+                    <div class="code-snippet mb-4">
+<pre><code-type>double</code-type> total = 0;
+<code-keyword>for</code-keyword> (<code-type>Transaccion</code-type> t : transacciones) {
+    <code-keyword>if</code-keyword> (t.getMonto() > 10000) {
+        total += t.getMonto();
+    }
+}</pre>
+                    </div>
+                    <p class="text-gray-600 mb-2"><strong>Enfoque Moderno (Streams y Lambdas):</strong></p>
+                    <div class="code-snippet">
+<pre><code-type>double</code-type> total = transacciones.stream()
+    <code-comment>// .filter() usa una implementación de Predicate<Transaccion></code-comment>
+    .filter(t -> t.getMonto() > 10000)
+    <code-comment>// .mapToDouble() usa una ToDoubleFunction<Transaccion></code-comment>
+    .mapToDouble(Transaccion::getMonto)
+    .sum();</pre>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">El Pipeline de un Stream</h3>
+                    <div class="space-y-4">
+                        <div class="flowchart-step bg-[#E0F7FA]"><strong>Fuente:</strong> La colección de datos (ej.
+                            <code class="text-sm">List&lt;Transaccion&gt;</code>)
+                        </div>
+                        <div class="flowchart-arrow">↓</div>
+                        <div class="flowchart-step"><strong>Operaciones Intermedias (0...n):</strong> Transforman el
+                            stream. <br><code class="text-sm">filter()</code>, <code class="text-sm">map()</code>, <code
+                                    class="text-sm">sorted()</code>. Son 'lazy'.
+                        </div>
+                        <div class="flowchart-arrow">↓</div>
+                        <div class="flowchart-step"><strong>Operación Terminal (1):</strong> Inicia el procesamiento y
+                            produce un resultado. <br><code class="text-sm">collect()</code>, <code class="text-sm">forEach()</code>,
+                            <code class="text-sm">sum()</code>.
+                        </div>
+                    </div>
+                    <div class="pro-tip">
+                        <p><span class="font-bold">Detalle Clave:</span> Las operaciones intermedias no se ejecutan
+                            hasta que se invoca una operación terminal. Para procesar datos en paralelo y aprovechar múltiples núcleos de CPU,
+                            simplemente cambia <code class="text-sm">.stream()</code> por <code class="text-sm">.parallelStream()</code>.
+                            ¡Es así de simple!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    const wrapLabel = (label) => {
+        if (label.length > 16) {
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).length > 16 && currentLine.length > 0) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = currentLine ? currentLine + ' ' + word : word;
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+        return label;
+    };
+
+    const tooltipTitleCallback = (tooltipItems) => {
+        const item = tooltipItems[0];
+        let label = item.chart.data.labels[item.dataIndex];
+        if (Array.isArray(label)) {
+            return label.join(' ');
+        } else {
+            return label;
+        }
+    };
+
+    const collectionsCtx = document.getElementById('collectionsChart').getContext('2d');
+    new Chart(collectionsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Mapas (Acceso Rápido)', 'Listas (Secuencias)', 'Conjuntos (Unicidad)'],
+            datasets: [{
+                label: 'Uso de Colecciones',
+                data: [50, 35, 15],
+                backgroundColor: [
+                    '#004AAD',
+                    '#0073E6',
+                    '#89CFF0',
+                ],
+                borderColor: '#FFFFFF',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
