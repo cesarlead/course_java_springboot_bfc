@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Spring Boot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /*background-color: #f7fafc;*/
+            background-color: #fcfbf6;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            color: #118AB2;
+            line-height: 1;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="
+<!--bg-gray-50 -->
+bg-[#fcfbf6]
+text-[#073B4C]
+">
+
+<div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+    <header class="text-center my-12">
+        <h1 class="text-4xl md:text-6xl font-black text-[#073B4C] uppercase tracking-wide">Spring Boot</h1>
+        <p class="mt-4 text-xl md:text-2xl text-[#118AB2] font-light">Construye aplicaciones robustas a la velocidad del pensamiento.</p>
+        <h3>GlobalDesk | Ing. Cesar Fernandez</h3>
+    </header>
+
+    <section class="my-16">
+        <div class="bg-white rounded-2xl shadow-xl p-8 text-center border-t-8 border-[#FF6B6B]">
+            <p class="text-2xl font-semibold text-gray-700">Lanza una aplicación lista para producción</p>
+            <p class="text-7xl md:text-9xl font-extrabold text-[#FF6B6B] my-4">Sin Fricción</p>
+            <p class="text-lg text-gray-600">Spring Boot elimina la configuración compleja, permitiéndote enfocarte en lo que realmente importa: la lógica de negocio.</p>
+        </div>
+    </section>
+
+    <div class="border-t border-gray-200 my-16"></div>
+
+    <section id="concepts" class="my-16 flex flex-col">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">El Núcleo de Spring Boot: Conceptos Clave</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-[#118AB2]">
+                <div class="flex items-center">
+                    <span class="text-3xl mr-4">📐</span>
+                    <h3 class="text-xl font-bold text-[#073B4C]">1. Principio de "Opinión sobre Configuración"</h3>
+                </div>
+                <p class="mt-4 text-gray-600 text-base">Adopta el principio de "Convención sobre Configuración", proporcionando valores por defecto sensatos para reducir el código *boilerplate* y acelerar el desarrollo. La personalización es posible, pero no obligatoria.</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-[#06D6A0]">
+                <div class="flex items-center">
+                    <span class="text-3xl mr-4">🔄</span>
+                    <h3 class="text-xl font-bold text-[#073B4C]">2. Inversión de Control (IoC) y Contenedor</h3>
+                </div>
+                <p class="mt-4 text-gray-600 text-base">El Contenedor de Spring gestiona el ciclo de vida de los objetos (Beans). En lugar de que tu código cree sus dependencias, el contenedor se las "inyecta", desacoplando los componentes y facilitando las pruebas.</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-[#FFD166]">
+                <div class="flex items-center">
+                    <span class="text-3xl mr-4">⚙️</span>
+                    <h3 class="text-xl font-bold text-[#073B4C]">3. Beans: Componentes Gestionados</h3>
+                </div>
+                <p class="mt-4 text-gray-600 text-base">Un Bean es cualquier objeto gestionado por el Contenedor IoC (ej: `@Service`, `@Repository`). Estos forman la columna vertebral de la aplicación y se benefician de los servicios del framework como la gestión de transacciones.</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-[#FF6B6B]">
+                <div class="flex items-center">
+                    <span class="text-3xl mr-4">🧠</span>
+                    <h3 class="text-xl font-bold text-[#073B4C]">4. Mecanismo de Autoconfiguración</h3>
+                </div>
+                <p class="mt-4 text-gray-600 text-base">Spring Boot examina las librerías en el *classpath* y configura automáticamente la aplicación. Si detecta un driver de base de datos y Spring Data JPA, configura un `DataSource` sin intervención manual.</p>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="border-t border-gray-200 my-16"></div>
+
+    <section id="setup" class="my-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12"> <span class="text-[#118AB2]">1.</span> Inicialización y Estructura del Proyecto</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-2xl font-semibold mb-4 text-[#073B4C]">La anatomía del `pom.xml`</h3>
+                <p class="text-gray-600 mb-4">El `pom.xml` es el corazón del proyecto. Define metadatos, dependencias y el proceso de construcción, aprovechando los "starters" para la autoconfiguración.</p>
+                <div class="chart-container h-80">
+                    <canvas id="pomChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-2xl font-semibold mb-4 text-[#073B4C]">Estructura de Directorios Estándar</h3>
+                <p class="text-gray-600 mb-4">Spring Boot favorece la convención sobre la configuración. Seguir esta estructura estándar asegura que todo funcione de manera predecible.</p>
+                <div class="bg-gray-800 text-white font-mono text-sm p-4 rounded-md overflow-x-auto">
+                        <pre><code>src/main
+├── java
+│  └─ com/cesarlead/app
+│     ├─ <span class="text-[#FFD166]">Application.java</span>
+│     ├─ controller
+│     ├─ service
+│     └─ repository
+└── resources
+   ├─ static
+   ├─ templates
+   └─ <span class="text-[#06D6A0]">application.properties</span></code></pre>
+                </div>
+                <p class="text-sm text-gray-500 mt-4"><span class="font-bold text-[#FFD166]">Application.java:</span> Punto de entrada con `@SpringBootApplication`. <br/><span class="font-bold text-[#06D6A0]">application.properties:</span> Centro de configuración externa.</p>
+                <p class="text-xs text-gray-500 mt-3 italic">Esta estructura sigue el <strong>Standard Directory Layout de Maven</strong>, asegurando la portabilidad y compatibilidad con herramientas de construcción estándar.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="border-t border-gray-200 my-16"></div>
+
+    <section id="architecture" class="my-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12"><span class="text-[#06D6A0]">2.</span> Diseño Arquitectónico: Separación de Responsabilidades</h2>
+        <p class="text-center max-w-3xl mx-auto text-lg text-gray-600 mb-12">La forma en que estructuras tu código define su mantenibilidad y escalabilidad. Una arquitectura limpia, basada en el principio de Separación de Responsabilidades, es crucial.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-2xl font-semibold mb-4 text-[#073B4C]">Capas vs. Hexagonal</h3>
+                <p class="text-gray-600 mb-4">
+                    <strong>Arquitectura en Capas:</strong> Ideal para aplicaciones CRUD estándar y un rápido desarrollo.
+                    <br>
+                    <strong>Arquitectura Hexagonal:</strong> Superior para sistemas con lógica de negocio compleja, donde la independencia del framework y la alta testabilidad son críticas.
+                </p>
+                <div class="chart-container h-96">
+                    <canvas id="architectureChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-2xl font-semibold mb-4 text-[#073B4C]">Flujo de Arquitectura en Capas</h3>
+                <p class="text-gray-600 mb-4">Para la mayoría de los proyectos, una arquitectura de capas bien definida es el punto de partida ideal. Separa claramente las responsabilidades y facilita el crecimiento.</p>
+                <div class="flex flex-col items-center space-y-2 py-4">
+                    <div class="text-center font-bold p-3 bg-[#118AB2] text-white rounded-lg shadow w-4/5">Controller (@RestController)</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="text-center font-bold p-3 bg-[#06D6A0] text-white rounded-lg shadow w-4/5">Service (@Service)</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="text-center font-bold p-3 bg-[#FFD166] text-[#073B4C] rounded-lg shadow w-4/5">Repository (@Repository)</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="text-center font-bold p-3 bg-[#FF6B6B] text-white rounded-lg shadow w-4/5">Database</div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-2xl font-semibold mb-4 text-[#073B4C]">Estructura de Arquitectura Hexagonal (Puertos y Adaptadores)</h3>
+            <p class="text-gray-600 mb-4">Aísla la lógica de negocio (dominio) de las tecnologías externas. Las dependencias siempre apuntan hacia el centro: <strong>Infraestructura → Aplicación → Dominio</strong>. El dominio no conoce a las capas exteriores.</p>
+            <div class="bg-gray-800 text-white font-mono text-sm p-4 rounded-md overflow-x-auto">
+                    <pre><code>src/main/java/com/cesarlead/app
+├── domain
+│   ├── model       <span class="text-gray-400">// Lógica de negocio pura, sin frameworks</span>
+│   └── port/output <span class="text-gray-400">// Interfaces que el dominio necesita (ej. Repositorio)</span>
+│
+├── application
+│   ├── usecase     <span class="text-gray-400">// Orquestación de los casos de uso</span>
+│   └── port/input  <span class="text-gray-400">// Interfaces que la app expone (ej. Services)</span>
+│
+└── infrastructure
+    ├── adapter/web   <span class="text-gray-400">// Adaptador de entrada (Controllers)</span>
+    ├── adapter/jpa   <span class="text-gray-400">// Adaptador de salida (Persistencia)</span>
+    ├── config        <span class="text-gray-400">// Configuración de Beans, seguridad, etc.</span>
+    └── Application.java <span class="text-gray-400">// Punto de entrada</span></code></pre>
+            </div>
+            <p class="text-sm text-gray-500 mt-4">
+                <span class="font-bold text-[#06D6A0]">Domain:</span> El núcleo. No depende de nada.
+                <br>
+                <span class="font-bold text-[#118AB2]">Application:</span> Conoce el dominio, pero no la infraestructura.
+                <br>
+                <span class="font-bold text-[#FF6B6B]">Infrastructure:</span> Implementa los puertos y depende de todo.
+            </p>
+        </div>
+    </section>
+
+
+
+    <div class="border-t border-gray-200 my-16"></div>
+
+    <section id="endpoints" class="my-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12"><span class="text-[#FFD166]">3.</span> Definición de la API: Endpoints RESTful</h2>
+        <p class="text-center max-w-3xl mx-auto text-lg text-gray-600 mb-12">Los endpoints son los puntos de entrada a tu lógica de negocio. Un diseño de API RESTful claro, consistente y predecible es fundamental para la integración con otros servicios.</p>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-2xl font-semibold mb-4 text-[#073B4C]">Anatomía de un Endpoint</h3>
+            <div class="flex flex-wrap items-center justify-center bg-gray-100 p-4 rounded-lg text-lg md:text-xl font-mono">
+                <span class="font-bold text-white bg-[#06D6A0] px-3 py-1 rounded-l-md">GET</span>
+                <span class="text-gray-600 bg-gray-200 px-3 py-1">/api/usuarios</span>
+                <span class="font-bold text-white bg-[#118AB2] px-3 py-1 rounded-r-md">/{id}</span>
+            </div>
+            <div class="text-sm text-center mt-4 space-y-1 text-gray-600">
+                <p><span class="font-bold text-[#06D6A0]">GET:</span> Verbo HTTP que define la acción (Idempotente).</p>
+                <p><span class="font-bold">/api/usuarios:</span> Ruta del Recurso.</p>
+                <p><span class="font-bold text-[#118AB2]">{id}:</span> Path Variable para identificar un recurso específico.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-2xl font-semibold mb-4 text-[#073B4C]">Operaciones CRUD Esenciales</h3>
+            <p class="text-gray-600 mb-4">Las cuatro operaciones principales (Crear, Leer, Actualizar, Borrar) forman la base de la mayoría de las APIs REST. Spring Boot ofrece anotaciones directas para cada una.</p>
+            <div class="chart-container h-96">
+                <canvas id="crudChart"></canvas>
+            </div>
+            <div class="mt-4 text-center bg-sky-50 border border-sky-200 text-sky-800 p-3 rounded-lg text-sm">
+                <strong>Buenas Prácticas:</strong> Acompaña cada operación con el código de estado HTTP correcto. Ej: <strong>201 Created</strong> para POST, <strong>200 OK</strong> para GET, <strong>204 No Content</strong> para DELETE.
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center my-16 border-t pt-8 border-gray-300">
+        <p class="text-lg font-semibold text-[#073B4C]">Ahora estás listo para construir eficientemente.</p>
+        <p class="text-gray-600">Con estos pilares arquitectónicos, estás equipado para desarrollar aplicaciones Spring Boot escalables, mantenibles y listas para producción.</p>
+        <p class="text-gray-600">
+            GlobalDesk | Ing. Cesar Fernandez |
+            <a href="https://cesarlead.com"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="text-blue-500 hover:underline cursor-pointer">
+                cesarlead.com
+            </a>
+        </p>
+    </footer>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const FONT_COLOR = '#073B4C';
+        const GRID_COLOR = 'rgba(7, 59, 76, 0.1)';
+        Chart.defaults.color = FONT_COLOR;
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        new Chart(document.getElementById('pomChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Herencia: spring-boot-starter-parent', 'Módulos de Autoconfiguración (Starters)', 'Plugin de Empaquetado (spring-boot-maven-plugin)', 'Metadatos del Proyecto (groupId, artifactId)'],
+                datasets: [{
+                    data: [25, 40, 15, 20],
+                    backgroundColor: ['#118AB2', '#06D6A0', '#FFD166', '#FF6B6B'],
+                    hoverOffset: 4,
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('architectureChart'), {
+            type: 'radar',
+            data: {
+                labels: ['Testabilidad', 'Desacoplamiento', ['Simplicidad', 'Inicial'], 'Flexibilidad', 'Curva de Aprendizaje'],
+                datasets: [{
+                    label: 'Capas',
+                    data: [3, 2, 5, 2, 5],
+                    fill: true,
+                    backgroundColor: 'rgba(255, 107, 107, 0.2)',
+                    borderColor: '#FF6B6B',
+                    pointBackgroundColor: '#FF6B6B',
+                }, {
+                    label: 'Hexagonal',
+                    data: [5, 5, 2, 5, 2],
+                    fill: true,
+                    backgroundColor: 'rgba(17, 138, 178, 0.2)',
+                    borderColor: '#118AB2',
+                    pointBackgroundColor: '#118AB2',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: GRID_COLOR },
+                        grid: { color: GRID_COLOR },
+                        pointLabels: { font: { size: 13 } },
+                        ticks: { display: false, stepSize: 1, backdropColor: 'transparent' },
+                        suggestedMin: 0,
+                        suggestedMax: 5
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('crudChart'), {
+            type: 'bar',
+            data: {
+                labels: ['@GetMapping (Leer)', '@PostMapping (Crear)', '@PutMapping (Actualizar)', '@DeleteMapping (Borrar)'],
+                datasets: [{
+                    label: 'Frecuencia de Uso / Importancia',
+                    data: [100, 85, 60, 45],
+                    backgroundColor: ['#118AB2', '#06D6A0', '#FFD166', '#FF6B6B'],
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { color: GRID_COLOR },
+                        ticks: { display: false }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { size: 14 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
