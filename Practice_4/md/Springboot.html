@@ -1,0 +1,310 @@
+<!DOCTYPE
+        html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de Errores en Microservicios con Spring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e5e5e2;
+            color: #5A677B;
+        }
+        .main-title {
+            color: #2D3748;
+        }
+        .accent-text {
+            color: #D95D39;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #F0EEEC;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(45, 55, 72, 0.08);
+        }
+        .flowchart-node {
+            background-color: #F9FAFB;
+            color: #2D3748;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            min-width: 150px;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 2px 4px rgba(45, 55, 72, 0.05);
+            transition: all 0.3s ease;
+        }
+        .flowchart-node:hover {
+            transform: scale(1.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .code-block-header {
+            background-color: #E5E7EB;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #D1D5DB;
+            font-size: 0.875rem;
+            color: #5A677B;
+        }
+        .code-block {
+            background-color: #F3F4F6;
+            color: #2D3748;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 400px; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<div class="container mx-auto p-4 md:p-8">
+
+    <header class="text-center mb-16">
+        <h1 class="text-4xl md:text-6xl font-black main-title uppercase tracking-wider">Mastering <span class="accent-text">Resilience</span></h1>
+        <p class="text-lg md:text-xl text-slate-600 mt-2">Guía para el Manejo de Errores y Validaciones en Microservicios con Spring Boot</p>
+        <p class="text-md text-gray-600 mt-2">GlobalDesk | Ing. Cesar Fernandez</p>
+    </header>
+
+    <main>
+
+        <section id="observability" class="mb-20">
+            <div class="card rounded-lg shadow-lg p-6 md:p-8 border-l-4" style="border-color: #A44A5C;">
+                <h2 class="text-3xl font-bold mb-4 main-title">1. Observabilidad Primero: Spring Actuator</h2>
+                <p class="text-slate-600 mb-8">Antes de gestionar errores, debemos entender el estado de nuestro servicio. Spring Actuator expone endpoints cruciales para monitoreo, proporcionando una ventana a la salud de la aplicación en tiempo real.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center ">
+                    <div class="p-6 rounded-lg bg-gray-50 border border-gray-200">
+                        <span class="text-5xl">❤️</span>
+                        <h3 class="text-xl font-bold mt-2 main-title">/health</h3>
+                        <p class="text-slate-600 mt-1">Verifica la salud de la aplicación y sus dependencias.</p>
+                    </div>
+                    <div class="p-6 rounded-lg bg-gray-50 border border-gray-200">
+                        <span class="text-5xl">ℹ️</span>
+                        <h3 class="text-xl font-bold mt-2 main-title">/info</h3>
+                        <p class="text-slate-600 mt-1">Expone información del build, versión de la app, etc.</p>
+                    </div>
+                    <div class="p-6 rounded-lg bg-gray-50 border border-gray-200">
+                        <span class="text-5xl">📊</span>
+                        <h3 class="text-xl font-bold mt-2 main-title">/metrics</h3>
+                        <p class="text-slate-600 mt-1">Métricas detalladas de rendimiento: CPU, memoria, hilos...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="validation" class="mb-20">
+            <div class="card rounded-lg shadow-lg p-6 md:p-8 border-l-4" style="border-color: #D95D39;">
+                <h2 class="text-3xl font-bold mb-4 main-title">2. Defensa Proactiva: El Arte de la Validación</h2>
+                <p class="text-slate-600 mb-8">La validación es nuestra primera línea de defensa. Con Jakarta Bean Validation, declaramos reglas de negocio directamente en los DTOs, manteniendo la lógica limpia y declarativa.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 items-stretch">
+                    <div class="bg-gray-50 rounded-lg p-4 flex flex-col h-full border border-gray-200">
+                        <div class="chart-container flex-grow">
+                            <canvas id="validationChart"></canvas>
+                        </div>
+                        <p class="text-center text-gray-500 mt-4 text-sm">Frecuencia de uso de las anotaciones más comunes.</p>
+                    </div>
+                    <div class="flex flex-col h-full">
+                        <div class="code-block-header rounded-t-lg">Ejemplo: CreateUserRequest.java</div>
+                        <pre class="code-block text-sm p-4 rounded-b-lg overflow-x-auto flex-grow border-x border-b border-gray-200"><code>
+public class CreateUserRequest {
+
+  @NotBlank(message = "El nombre no puede estar vacío.")
+  @Size(min = 2, max = 50)
+  private String name;
+
+  @NotBlank(message = "El email es obligatorio.")
+  @Email(message = "El formato del email es inválido.")
+  private String email;
+
+  @NotNull
+  @Min(value = 18, message = "Debe ser mayor de 18 años.")
+  private Integer age;
+}
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="centralized-handling" class="mb-20">
+            <div class="card rounded-lg shadow-lg p-6 md:p-10 border-l-4" style="border-color: #3A5A78;">
+                <h2 class="text-3xl font-bold mb-4 main-title">3. Estrategia Centralizada: @RestControllerAdvice</h2>
+                <p class="text-slate-600 mb-16 max-w-4xl">
+                    Un <code class="bg-gray-200/50 text-accent-terracotta px-2 py-1 rounded">@RestControllerAdvice</code> actúa como un interceptor global que captura excepciones y las transforma en respuestas HTTP consistentes. Es la piedra angular de un manejo de errores limpio.
+                </p>
+                <h3 class="text-2xl font-bold text-center mb-8 main-title">Flujo de una Excepción Gestionada</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 flex-wrap">
+                    <div class="flowchart-node rounded-full">Petición Cliente</div>
+                    <svg class="h-6 w-6 text-gray-400 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                    <div class="transform rotate-90 md:hidden text-3xl text-gray-400">→</div>
+                    <div class="flowchart-node rounded-full">Controller</div>
+                    <svg class="h-6 w-6 text-gray-400 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                    <div class="transform rotate-90 md:hidden text-3xl text-gray-400">→</div>
+                    <div class="flowchart-node rounded-full">Servicio lanza Excepción</div>
+                    <svg class="h-6 w-6 text-gray-400 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                    <div class="transform rotate-90 md:hidden text-3xl text-gray-400">→</div>
+                    <div class="flowchart-node font-bold rounded-full bg-green-100" style="border-color: #588157; color: #2f452e;">@ControllerAdvice Intercepta</div>
+                    <svg class="h-6 w-6 text-gray-400 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                    <div class="transform rotate-90 md:hidden text-3xl text-gray-400">→</div>
+                    <div class="flowchart-node rounded-full">Respuesta de Error</div>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-8 mt-16 main-title">Transformando el Caos en Claridad</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-6">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                        <h4 class="text-xl font-bold mb-4 flex items-center" style="color: #c53030;">
+                            <svg class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            Antes: Error por Defecto
+                        </h4>
+                        <pre class="code-block text-sm p-4 rounded-lg overflow-x-auto border"><code>{
+    "timestamp": "2025-10-05T17:02:00.123+00:00",
+    "status": 500,
+    "error": "Internal Server Error",
+    "trace": "java.lang.NullPointerException: ...",
+    "path": "/api/users"
+}</code></pre>
+                        <p class="mt-4 text-sm text-slate-600">Expone detalles internos, es poco útil y riesgoso.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                        <h4 class="text-xl font-bold mb-4 flex items-center" style="color: #588157;">
+                            <svg class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            Después: Error Estructurado
+                        </h4>
+                        <pre class="code-block text-sm p-4 rounded-lg overflow-x-auto border"><code>{
+    "timestamp": "2025-10-05T17:02:00.456Z",
+    "status": 404,
+    "error": "Not Found",
+    "message": "El usuario con ID '123' no fue encontrado.",
+    "path": "/api/users/123"
+}</code></pre>
+                        <p class="mt-4 text-sm text-slate-600">Claro, conciso y seguro. Aporta valor sin revelar detalles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="best-practices" class="mb-20">
+            <div class="card rounded-lg shadow-lg p-6 md:p-10 border-l-4" style="border-color: #588157;">
+                <h2 class="text-3xl font-bold mb-4 main-title">4. Pilares de una Estrategia de Errores Profesional</h2>
+                <p class="text-slate-600 mb-12 max-w-4xl">Adoptar una filosofía que priorice la experiencia del desarrollador (DX) y la fiabilidad del sistema es crucial. Estos son los pilares de una estrategia de errores de nivel industrial.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-50 p-6 rounded-xl border-t-4 border border-gray-200" style="border-top-color: #D95D39;">
+                        <div class="flex items-center mb-3">
+                            <svg class="h-8 w-8" style="color:#D95D39"  fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                            <h4 class="text-xl font-bold main-title ml-3">Claridad y Utilidad</h4>
+                        </div>
+                        <p class="text-slate-600">Los errores deben ser accionables. Utiliza el <strong class="main-title">código de estado HTTP correcto</strong> y provee un mensaje que defina el problema exacto.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border-t-4 border border-gray-200" style="border-top-color: #588157;">
+                        <div class="flex items-center mb-3">
+                            <svg class="h-8 w-8" style="color:#588157"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"><path d="M12 20v-4" />  <path d="M12 8V4" />  <path d="M4.93 19.07l2.83-2.83" />  <path d="M16.24 10.59l2.83-2.83" />  <path d="M19.07 4.93l-2.83 2.83" />  <path d="M7.76 13.41L4.93 16.24" />  <circle cx="12" cy="12" r="4" /></svg>
+                            <h4 class="text-xl font-bold main-title ml-3">Consistencia</h4>
+                        </div>
+                        <p class="text-slate-600">Define un <strong class="main-title">contrato de error (Error DTO)</strong> y úsalo para TODAS las respuestas 4xx y 5xx. La predictibilidad es clave para una buena DX.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border-t-4 border border-gray-200" style="border-top-color: #3A5A78;">
+                        <div class="flex items-center mb-3">
+                            <svg class="h-8 w-8" style="color:#3A5A78"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                            <h4 class="text-xl font-bold main-title ml-3">Fortificación (Hardening)</h4>
+                        </div>
+                        <p class="text-slate-600"><strong class="main-title">Nunca expongas detalles internos.</strong> Las trazas de error filtran versiones de librerías y rutas del sistema, información valiosa para un atacante.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border-t-4 border border-gray-200" style="border-top-color: #A44A5C;">
+                        <div class="flex items-center mb-3">
+                            <svg class="h-8 w-8" style="color:#A44A5C"  fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            <h4 class="text-xl font-bold main-title ml-3">Observabilidad</h4>
+                        </div>
+                        <p class="text-slate-600">Registra los errores 5xx con un <strong class="main-title">ID de correlación</strong> para trazar la petición a través de los logs. Esto es vital para depurar y monitorear la salud de la aplicación.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center text-gray-400 mt-12 py-4 border-t" style="border-color: #F0EEEC;">
+        <p class="text-slate-600">Manejo de Excepciones y Validaciones en Microservicios con Spring Boot.</p>
+        <p class="text-gray-400">
+            GlobalDesk | Ing. Cesar Fernandez |
+            <a href="https://cesarlead.com" target="_blank" rel="noopener noreferrer" class="hover:underline" style="color: #3A5A78;">
+                cesarlead.com
+            </a>
+        </p>
+    </footer>
+</div>
+
+<script>
+    const wrapLabel = (label, maxLength = 16) => {
+        if (typeof label !== 'string' || label.length <= maxLength) return label;
+        const words = label.split(' ');
+        const lines = [];
+        let currentLine = '';
+        words.forEach(word => {
+            if ((currentLine + ' ' + word).trim().length > maxLength) {
+                lines.push(currentLine.trim());
+                currentLine = word;
+            } else {
+                currentLine = (currentLine + ' ' + word).trim();
+            }
+        });
+        if (currentLine) lines.push(currentLine.trim());
+        return lines;
+    };
+    const tooltipTitleCallback = (tooltipItems) => {
+        const item = tooltipItems[0];
+        let label = item.chart.data.labels[item.dataIndex];
+        return Array.isArray(label) ? label.join(' ') : label;
+    };
+    const sharedChartOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: '#5A677B', font: { size: 14 } } },
+            tooltip: {
+                callbacks: { title: tooltipTitleCallback },
+                titleColor: '#2D3748',
+                bodyColor: '#5A677B',
+                backgroundColor: '#FFFFFF',
+                borderColor: '#EAE5DD',
+                borderWidth: 1
+            }
+        }
+    };
+    new Chart(document.getElementById('validationChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['@NotNull / @NotBlank', '@Size / @Length', '@Email', '@Pattern (Regex)', '@Valid (Anidado)'].map(l => wrapLabel(l)),
+            datasets: [{
+                label: 'Frecuencia de Uso',
+                data: [95, 85, 75, 60, 50],
+                backgroundColor: 'rgba(217, 93, 57, 0.7)',
+                borderColor: 'rgba(217, 93, 57, 1)',
+                borderWidth: 2,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            ...sharedChartOptions,
+            indexAxis: 'y',
+            scales: {
+                x: { ticks: { color: '#5A677B' }, grid: { color: '#F0EEEC' } },
+                y: { ticks: { color: '#2D3748' }, grid: { display: false } }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masterclass Interactiva: Resiliencia en APIs con Spring Boot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-color: #D95D39;
+            --dark-blue: #1e293b;
+            --slate-600: #475569;
+            --slate-100: #f1f5f9;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--slate-100);
+            color: var(--slate-600);
+            overflow: hidden; /* Previene el scroll del body */
+        }
+        .main-title { color: var(--dark-blue); }
+        .accent-text { color: var(--brand-color); }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #475569;
+            transition: all 0.2s ease-in-out;
+            border-left: 4px solid transparent;
+        }
+        .nav-link:hover {
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+        .nav-link.active {
+            background-color: #e0e7ff;
+            color: #4338ca;
+            border-left-color: #4f46e5;
+            font-weight: 600;
+        }
+        .content-section {
+            display: none;
+            height: 100%;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .interactive-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .interactive-btn.active {
+            color: white;
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+        .interactive-btn:not(.active) {
+            background-color: #e2e8f0;
+            color: #4a5568;
+        }
+        .interactive-btn:not(.active):hover {
+            background-color: #cbd5e0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<div class="flex h-screen bg-gray-100">
+    <aside class="w-72 bg-white border-r border-gray-200 p-6 flex flex-col flex-shrink-0">
+        <header class="mb-8">
+            <h1 class="text-2xl font-black main-title uppercase tracking-wider">Mastering <span class="accent-text">Resilience</span></h1>
+            <p class="text-sm text-slate-500 mt-1">Guía Interactiva con Spring Boot</p>
+        </header>
+
+        <nav class="flex-grow">
+            <ul class="space-y-2">
+                <li><a href="#" class="nav-link" data-target="pillar1"><svg class="h-5 w-5 mr-3" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>1. Observabilidad</a></li>
+                <li><a href="#" class="nav-link" data-target="pillar2"><svg class="h-5 w-5 mr-3" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>2. Validación</a></li>
+                <li><a href="#" class="nav-link" data-target="pillar3"><svg class="h-5 w-5 mr-3" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9a9.75 9.75 0 100-13.5h9a9.75 9.75 0 000 13.5z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12.75h4.5m-4.5-3h4.5" /></svg>3. Manejo de Errores</a></li>
+                <li><a href="#" class="nav-link" data-target="pillar4"><svg class="h-5 w-5 mr-3" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5l.415-.207a.75.75 0 011.085.67V10.5m0 0h6m-6 0a.75.75 0 001.085.67l.415-.207m-7.25 0a.75.75 0 00-1.085.67l-.415.207a.75.75 0 000 1.34l.415.207a.75.75 0 001.085-.67V10.5m12 0a.75.75 0 00-1.085.67l-.415.207a.75.75 0 000 1.34l.415.207a.75.75 0 001.085-.67V10.5" /></svg>4. Contrato de Error</a></li>
+                <li><a href="#" class="nav-link" data-target="pillar5"><svg class="h-5 w-5 mr-3" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-1.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h4.5M12 3v13.5" /></svg>5. Diseño Avanzado</a></li>
+            </ul>
+        </nav>
+
+        <footer class="mt-auto text-sm text-gray-400 text-center">
+            <p>GlobalDesk | Ing. Cesar Fernandez</p>
+            <a href="https://cesarlead.com" target="_blank" rel="noopener noreferrer" class="hover:underline text-indigo-500">cesarlead.com</a>
+        </footer>
+    </aside>
+
+    <main class="flex-1 p-6 lg:p-8 bg-gray-100 overflow-y-auto">
+
+        <!-- MÓDULO 1: OBSERVABILIDAD -->
+        <section id="pillar1" class="content-section">
+            <div class="flex flex-col h-full mb-4">
+                <header class="mb-6">
+                    <h2 class="text-4xl font-bold main-title">1. El Arte de Preguntar (Observabilidad)</h2>
+                    <p class="text-lg text-slate-600 mt-2">Instalaremos ventanas y sensores en nuestro sistema para **VER** su estado interno en tiempo real. Pasamos de un monitoreo pasivo (preguntas conocidas) a una observabilidad activa (formular preguntas nuevas).</p>
+                </header>
+                <div class="flex-grow grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Columna Izquierda: Pasos de Configuración -->
+                    <div class="flex flex-col gap-6">
+                        <div class="card p-6">
+                            <h3 class="text-xl font-semibold mb-3 main-title">Paso 1: Instalar los Sensores (`pom.xml`)</h3>
+                            <p class="text-sm text-slate-600 mb-4">Añadimos el `starter` de Actuator. Esto es un "paquete de capacidades" que activa la autoconfiguración de Spring Boot para el monitoreo.</p>
+                            <pre class="code-block"><code><span style="color:#808080;">&lt;!-- pom.xml --&gt;</span>
+&lt;<span style="color:#569CD6;">dependency</span>&gt;
+    &lt;<span style="color:#569CD6;">groupId</span>&gt;org.springframework.boot&lt;/<span style="color:#569CD6;">groupId</span>&gt;
+    &lt;<span style="color:#569CD6;">artifactId</span>&gt;spring-boot-starter-actuator&lt;/<span style="color:#569CD6;">artifactId</span>&gt;
+&lt;/<span style="color:#569CD6;">dependency</span>&gt;</code></pre>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-semibold mb-3 main-title">Paso 2: Configuración Segura (`application.properties`)</h3>
+                            <p class="text-sm text-slate-600 mb-4">Aplicamos **Defensa en Profundidad**: aislamos los endpoints de gestión en un puerto privado y exponemos solo lo estrictamente necesario. <strong class="text-red-600">Nunca usar `*` en producción.</strong></p>
+                            <pre class="code-block"><code><span style="color:#6A9955;"># Puerto principal de la aplicación (público)</span>
+<span style="color:#9CDCFE;">server.port</span>=<span style="color:#B5CEA8;">8080</span>
+
+<span style="color:#6A9955;"># 1. Aislamos el puerto de gestión (debe ser privado)</span>
+<span style="color:#9CDCFE;">management.server.port</span>=<span style="color:#B5CEA8;">9091</span>
+
+<span style="color:#6A9955;"># 2. Exponemos explícitamente solo lo necesario</span>
+<span style="color:#9CDCFE;">management.endpoints.web.exposure.include</span>=<span style="color:#CE9178;">health,info,prometheus</span>
+
+<span style="color:#6A9955;"># 3. Habilitamos el endpoint de Prometheus</span>
+<span style="color:#9CDCFE;">management.endpoint.prometheus.enabled</span>=<span style="color:#B5CEA8;">true</span></code></pre>
+                        </div>
+                    </div>
+                    <!-- Columna Derecha: Endpoints Clave -->
+                    <div class="flex flex-col gap-6">
+                        <div class="card p-6 flex-grow">
+                            <h3 class="text-xl font-semibold mb-3 main-title">Paso 3: Explorando los Endpoints Clave</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <h4 class="font-bold main-title">❤️ `/health` - El Pulso del Servicio</h4>
+                                    <p class="text-sm text-slate-600">Esencial para la auto-reparación en Kubernetes (`Liveness` y `Readiness` probes). Un `HealthIndicator` personalizado es clave para verificar dependencias críticas.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold main-title">🧬 `/info` - El ADN del Servicio</h4>
+                                    <p class="text-sm text-slate-600">Provee trazabilidad absoluta (versión, branch, commit) para saber qué código exacto está en producción, automatizado vía plugins de Maven.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold main-title">📈 `/metrics` y `/prometheus` - Los Signos Vitales</h4>
+                                    <p class="text-sm text-slate-600">Expone métricas numéricas detalladas gracias a Micrometer, listas para ser consumidas por sistemas como Prometheus y alimentar nuestros dashboards y alertas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MÓDULO 2: VALIDACIÓN -->
+        <section id="pillar2" class="content-section">
+            <div class="flex flex-col h-full">
+                <header class="mb-6">
+                    <h2 class="text-4xl font-bold main-title">2. El Guardián en la Puerta (Validación)</h2>
+                    <p class="text-lg text-slate-600 mt-2">Construimos un puente levadizo para **PROTEGER** nuestro sistema de datos inválidos. Usamos Jakarta Bean Validation para aplicar el principio "Fail Fast": rechazar peticiones incorrectas en la frontera.</p>
+                </header>
+                <div class="flex-grow grid lg:grid-cols-5 gap-6 ">
+                    <!-- Columna Izquierda: Código -->
+                    <div class="lg:col-span-3 flex flex-col gap-6 mb-4">
+                        <div class="card p-6 flex-grow">
+                            <h3 class="text-xl font-semibold mb-2 main-title">Paso 1: Definir el Contrato (Reglas en el DTO)</h3>
+                            <p class="text-sm text-slate-600 mb-4">Usamos `Records` de Java para DTOs inmutables y concisos. Las anotaciones de validación (`@NotBlank`, `@Size`, `@Valid`) definen las reglas del contrato de la API.</p>
+                            <pre class="code-block"><code><span style="color:#569CD6;">public record</span> <span style="color:#4EC9B0;">UserCreateDTO</span>(
+    <span style="color:#C586C0;">@NotBlank</span>(message = <span style="color:#CE9178;">"El nombre es obligatorio."</span>)
+    <span style="color:#C586C0;">@Size</span>(min = <span style="color:#B5CEA8;">3</span>, max = <span style="color:#B5CEA8;">50</span>)
+    <span style="color:#4EC9B0;">String</span> username,
+
+    <span style="color:#C586C0;">@NotBlank @Email</span>
+    <span style="color:#4EC9B0;">String</span> email,
+
+    <span style="color:#C586C0;">@NotNull</span>(message = <span style="color:#CE9178;">"La dirección no puede ser nula."</span>)
+    <span style="color:#C586C0;">@Valid</span> <span style="color:#6A9955;">// ¡CRUCIAL! Activa la validación en cascada.</span>
+    <span style="color:#4EC9B0;">AddressDTO</span> address
+) {}
+
+<span style="color:#569CD6;">public record</span> <span style="color:#4EC9B0;">AddressDTO</span>(
+    <span style="color:#C586C0;">@NotBlank</span>
+    <span style="color:#4EC9B0;">String</span> street,
+
+    <span style="color:#C586C0;">@NotBlank</span>
+    <span style="color:#4EC9B0;">String</span> city
+) {}</code></pre>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-semibold mb-2 main-title">Paso 2: Activar el Guardián (Controller)</h3>
+                            <p class="text-sm text-slate-600 mb-4">`@Valid` activa la validación en `@RequestBody`. `@Validated` a nivel de clase activa la validación para otros parámetros (`@PathVariable`, `@RequestParam`).</p>
+                            <pre class="code-block"><code><span style="color:#C586C0;">@RestController</span>
+<span style="color:#C586C0;">@RequestMapping</span>(<span style="color:#CE9178;">"/users"</span>)
+<span style="color:#C586C0;">@Validated</span> <span style="color:#6A9955;">// Activa validación para parámetros de método</span>
+<span style="color:#569CD6;">public class</span> <span style="color:#4EC9B0;">UserController</span> {
+
+    <span style="color:#C586C0;">@PostMapping</span>
+    <span style="color:#569CD6;">public</span> <span style="color:#4EC9B0;">ResponseEntity</span>&lt;<span style="color:#4EC9B0;">String</span>&gt; <span style="color:#DCDCAA;">createUser</span>(
+        <span style="color:#C586C0;">@Valid</span> <span style="color:#C586C0;">@RequestBody</span> <span style="color:#4EC9B0;">UserCreateDTO</span> dto) {
+        <span style="color:#6A9955;">// Este código NUNCA se ejecuta si la validación falla</span>
+        <span style="color:#569CD6;">return</span> <span style="color:#4EC9B0;">ResponseEntity</span>.<span style="color:#9CDCFE;">ok</span>(<span style="color:#CE9178;">"Usuario creado."</span>);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                    <!-- Columna Derecha: Verificación -->
+                    <div class="lg:col-span-2 flex flex-col gap-6 mb-4">
+                        <div class="card p-6 flex-grow">
+                            <h3 class="text-xl font-semibold mb-2 main-title">Paso 3: Verificación (Rompiendo el Contrato)</h3>
+                            <p class="text-sm text-slate-600 mb-2">Una petición con datos inválidos resulta en un `HTTP 400 Bad Request` con un cuerpo JSON detallando los errores.</p>
+                            <h4 class="font-semibold text-sm main-title mt-4">Petición INVÁLIDA (`curl`):</h4>
+                            <pre class="code-block text-sm"><code>curl -X POST http://localhost:8080/users \
+ -H "Content-Type: application/json" \
+ -d '{
+    "username": "ar",
+    "email": "test@test.com",
+    "address": { "street": "" }
+ }'</code></pre>
+                            <h4 class="font-semibold text-sm main-title mt-4">Respuesta de Error por Defecto (HTTP 400):</h4>
+                            <pre class="code-block text-sm flex-grow"><code>{
+    <span style="color:#9CDCFE;">"status"</span>: <span style="color:#B5CEA8;">400</span>,
+    <span style="color:#9CDCFE;">"error"</span>: <span style="color:#CE9178;">"Bad Request"</span>,
+    <span style="color:#9CDCFE;">"errors"</span>: [
+        {
+            <span style="color:#9CDCFE;">"defaultMessage"</span>: <span style="color:#CE9178;">"size must be between 3 and 50"</span>,
+            <span style="color:#9CDCFE;">"field"</span>: <span style="color:#CE9178;">"username"</span>,
+            <span style="color:#9CDCFE;">"rejectedValue"</span>: <span style="color:#CE9178;">"ar"</span>
+        },
+        {
+            <span style="color:#9CDCFE;">"defaultMessage"</span>: <span style="color:#CE9178;">"must not be blank"</span>,
+            <span style="color:#9CDCFE;">"field"</span>: <span style="color:#CE9178;">"address.street"</span>,
+            <span style="color:#9CDCFE;">"rejectedValue"</span>: <span style="color:#CE9178;">""</span>
+        }
+    ]
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pillar3" class="content-section">
+            <!-- Contenido del Módulo 3 irá aquí -->
+
+                <div class="flex flex-col h-full">
+                    <header class="mb-6">
+                        <h2 class="text-4xl font-bold main-title">3. El Centro de Comando (Manejo de Errores)</h2>
+                        <p class="text-lg text-slate-600 mt-2">Diseñamos un centro de comando para <strong>gestionar</strong> crisis internas de forma ordenada. Usando <code>@RestControllerAdvice</code>, centralizamos el manejo de excepciones, eliminando <code>try-catch</code> repetitivos y garantizando respuestas de error consistentes.</p>
+                    </header>
+                    <div class="flex-grow grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Columna Izquierda: El Código del Handler -->
+                        <div class="card p-6 flex flex-col  mb-4">
+                            <h3 class="text-xl font-semibold mb-2 main-title">Paso 1: Crear el `GlobalExceptionHandler`</h3>
+                            <p class="text-sm text-slate-600 mb-4">Esta clase, anotada con <code>@RestControllerAdvice</code>, interceptará excepciones lanzadas por cualquier <code>@RestController</code>.</p>
+                            <pre class="code-block flex-grow"><code><span style="color:#C586C0;">@RestControllerAdvice</span>
+<span style="color:#569CD6;">public class</span> <span style="color:#4EC9B0;">GlobalExceptionHandler</span> {
+
+    <span style="color:#6A9955;">// Maneja errores de validación de @RequestBody</span>
+    <span style="color:#C586C0;">@ExceptionHandler</span>(<span style="color:#4EC9B0;">MethodArgumentNotValidException</span>.<span style="color:#569CD6;">class</span>)
+    <span style="color:#C586C0;">@ResponseStatus</span>(<span style="color:#4EC9B0;">HttpStatus</span>.<span style="color:#9CDCFE;">BAD_REQUEST</span>)
+    <span style="color:#569CD6;">public</span> <span style="color:#4EC9B0;">Map</span>&lt;<span style="color:#4EC9B0;">String</span>, <span style="color:#4EC9B0;">Object</span>&gt; <span style="color:#DCDCAA;">handleValidationErrors</span>(<span style="color:#4EC9B0;">MethodArgumentNotValidException</span> ex) {
+        <span style="color:#4EC9B0;">Map</span>&lt;<span style="color:#4EC9B0;">String</span>, <span style="color:#4EC9B0;">Object</span>&gt; response = <span style="color:#569CD6;">new</span> <span style="color:#4EC9B0;">LinkedHashMap</span>&lt;&gt;();
+        response.<span style="color:#9CDCFE;">put</span>(<span style="color:#CE9178;">"error"</span>, <span style="color:#CE9178;">"Validation Failed"</span>);
+        <span style="color:#4EC9B0;">List</span>&lt;<span style="color:#4EC9B0;">String</span>&gt; errors = ex.<span style="color:#9CDCFE;">getBindingResult</span>()
+            .<span style="color:#9CDCFE;">getFieldErrors</span>().<span style="color:#9CDCFE;">stream</span>()
+            .<span style="color:#9CDCFE;">map</span>(<span style="color:#4EC9B0;">FieldError</span>::<span style="color:#9CDCFE;">getDefaultMessage</span>)
+            .<span style="color:#9CDCFE;">collect</span>(<span style="color:#4EC9B0;">Collectors</span>.<span style="color:#9CDCFE;">toList</span>());
+        response.<span style="color:#9CDCFE;">put</span>(<span style="color:#CE9178;">"details"</span>, errors);
+        <span style="color:#569CD6;">return</span> response;
+    }
+
+    <span style="color:#6A9955;">// Maneja nuestra excepción para recursos no encontrados</span>
+    <span style="color:#C586C0;">@ExceptionHandler</span>(<span style="color:#4EC9B0;">ResourceNotFoundException</span>.<span style="color:#569CD6;">class</span>)
+    <span style="color:#C586C0;">@ResponseStatus</span>(<span style="color:#4EC9B0;">HttpStatus</span>.<span style="color:#9CDCFE;">NOT_FOUND</span>)
+    <span style="color:#569CD6;">public</span> <span style="color:#4EC9B0;">Map</span>&lt;<span style="color:#4EC9B0;">String</span>, <span style="color:#4EC9B0;">Object</span>&gt; <span style="color:#DCDCAA;">handleResourceNotFound</span>(<span style="color:#4EC9B0;">ResourceNotFoundException</span> ex) {
+        <span style="color:#4EC9B0;">Map</span>&lt;<span style="color:#4EC9B0;">String</span>, <span style="color:#4EC9B0;">Object</span>&gt; response = <span style="color:#569CD6;">new</span> <span style="color:#4EC9B0;">LinkedHashMap</span>&lt;&gt;();
+        response.<span style="color:#9CDCFE;">put</span>(<span style="color:#CE9178;">"error"</span>, ex.<span style="color:#9CDCFE;">getMessage</span>());
+        <span style="color:#569CD6;">return</span> response;
+    }
+
+    <span style="color:#6A9955;">// Fallback para cualquier otra excepción</span>
+    <span style="color:#C586C0;">@ExceptionHandler</span>(<span style="color:#4EC9B0;">Exception</span>.<span style="color:#569CD6;">class</span>)
+    <span style="color:#C586C0;">@ResponseStatus</span>(<span style="color:#4EC9B0;">HttpStatus</span>.<span style="color:#9CDCFE;">INTERNAL_SERVER_ERROR</span>)
+    <span style="color:#569CD6;">public</span> <span style="color:#4EC9B0;">Map</span>&lt;<span style="color:#4EC9B0;">String</span>, <span style="color:#4EC9B0;">Object</span>&gt; <span style="color:#DCDCAA;">handleGenericException</span>(<span style="color:#4EC9B0;">Exception</span> ex) {
+        <span style="color:#4EC9B0;">Map</span>&lt;<span style="color:#4EC9B0;">String</span>, <span style="color:#4EC9B0;">Object</span>&gt; response = <span style="color:#569CD6;">new</span> <span style="color:#4EC9B0;">LinkedHashMap</span>&lt;&gt;();
+        response.<span style="color:#9CDCFE;">put</span>(<span style="color:#CE9178;">"error"</span>, <span style="color:#CE9178;">"Ocurrió un error inesperado en el servidor"</span>);
+        <span style="color:#569CD6;">return</span> response;
+    }
+}</code></pre>
+                        </div>
+                        <!-- Columna Derecha: Flujo y Resultados -->
+                        <div class="flex flex-col gap-6  mb-4">
+                            <div class="card p-6">
+                                <h3 class="text-xl font-semibold mb-4 main-title">Flujo de una Excepción Gestionada</h3>
+                                <div class="text-sm space-x-2 text-center font-semibold flex items-center justify-center flex-wrap">
+                                    <span>Petición Cliente</span> <span class="text-xl">→</span>
+                                    <span>Controller/Service</span> <span class="text-xl">→</span>
+                                    <span class="text-red-600">💥 Lanza Excepción</span> <span class="text-xl">→</span>
+                                    <span class="text-green-600 font-bold">🛡️ @RestControllerAdvice Intercepta</span> <span class="text-xl">→</span>
+                                    <span>Respuesta de Error</span>
+                                </div>
+                            </div>
+                            <div class="card p-6 flex-grow">
+                                <h3 class="text-xl font-semibold mb-2 main-title">Paso 2: Comparación de Resultados</h3>
+                                <p class="text-sm text-slate-600 mb-2">La diferencia en la claridad y seguridad de la respuesta es radical. Eliminamos las trazas de pila y proporcionamos un mensaje útil.</p>
+
+                                <h4 class="font-semibold text-sm main-title mt-4 text-red-600">❌ ANTES: Error por Defecto (500)</h4>
+                                <pre class="code-block text-sm mb-4"><code>{
+    <span style="color:#9CDCFE;">"timestamp"</span>: <span style="color:#CE9178;">"2025-10-06T12:00:00Z"</span>,
+    <span style="color:#9CDCFE;">"status"</span>: <span style="color:#B5CEA8;">500</span>,
+    <span style="color:#9CDCFE;">"error"</span>: <span style="color:#CE9178;">"Internal Server Error"</span>,
+    <span style="color:#9CDCFE;">"trace"</span>: <span style="color:#CE9178;">"com.example.ResourceNotFoundException: ...at..."</span>,
+    <span style="color:#9CDCFE;">"path"</span>: <span style="color:#CE9178;">"/users/999"</span>
+}</code></pre>
+
+                                <h4 class="font-semibold text-sm main-title mt-4 text-green-600">✅ DESPUÉS: Error Estructurado (404)</h4>
+                                <pre class="code-block text-sm"><code>{
+    <span style="color:#9CDCFE;">"error"</span>: <span style="color:#CE9178;">"El usuario con ID 999 no fue encontrado."</span>
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <section id="pillar4" class="content-section">
+                <div class="flex flex-col h-full">
+                    <header class="mb-6">
+                        <h2 class="text-4xl font-bold main-title">4. Comunicación Profesional: El Contrato de Error</h2>
+                        <p class="text-lg text-slate-600 mt-2">La forma en que comunicamos los errores es crucial. Un buen contrato de error, siguiendo estándares como RFC 7807, crea APIs predecibles y fáciles de consumir. ¡Interactúa para ver la diferencia!</p>
+                    </header>
+                    <div class="card p-6 flex-grow flex flex-col">
+                        <div class="flex flex-col md:flex-row items-center md:justify-between gap-4 mb-6">
+                            <h3 class="text-xl font-semibold main-title">Anatomía de una Respuesta de Error Profesional</h3>
+                            <div class="flex items-center gap-2 p-1 bg-slate-200 rounded-lg" id="errorQualitySelector">
+                                <button data-quality="bad" class="interactive-btn text-sm">Básico</button>
+                                <button data-quality="good" class="interactive-btn text-sm">Mejorado</button>
+                                <button data-quality="best" class="interactive-btn text-sm active">Profesional</button>
+                            </div>
+                        </div>
+                        <div class="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                            <div class="lg:col-span-1 flex flex-col gap-4">
+                                <h4 class="font-semibold text-lg main-title">Selecciona un tipo de error:</h4>
+                                <select id="errorTypeSelector" class="w-full p-2 text-base border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="validation">Error de Validación (400)</option>
+                                    <option value="notFound">Recurso No Encontrado (404)</option>
+                                    <option value="conflict">Conflicto de Datos (409)</option>
+                                </select>
+                                <div id="errorExplanation" class="mt-2 text-sm bg-blue-50 p-4 rounded-lg border border-blue-200 text-blue-800"></div>
+                            </div>
+                            <div class="lg:col-span-2 h-full flex flex-col">
+                                <p class="text-sm text-slate-600 mb-2">Visualización de la respuesta HTTP:</p>
+                                <pre id="responseOutput" class="code-block rounded-md flex-grow min-h-[300px]"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <section id="pillar5" class="content-section">
+            <div class="flex flex-col h-full">
+                <header class="mb-6">
+                    <h2 class="text-4xl font-bold main-title">5. Diseño Avanzado y Principios Clave</h2>
+                    <p class="text-lg text-slate-600 mt-2">Las aplicaciones robustas requieren un diseño de excepciones deliberado. Esto incluye crear una jerarquía de excepciones, internacionalización (i18n) de mensajes y adherirse a principios clave de resiliencia.</p>
+                </header>
+                <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-6 ">
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold mb-3 main-title">Jerarquía de Excepciones Personalizadas</h3>
+                        <p class="text-sm text-slate-600 mb-3">Una clase base abstracta (`BaseApiException`) permite un manejo polimórfico en `@RestControllerAdvice` y centraliza la lógica común, manteniendo el código limpio y extensible.</p>
+                        <pre class="code-block"><code><span style="color:#569CD6;">public abstract class</span> <span style="color:#4EC9B0;">BaseApiException</span> <span style="color:#569CD6;">extends</span> <span style="color:#4EC9B0;">RuntimeException</span> {
+  <span style="color:#6A9955;">// ...</span>
+}
+
+<span style="color:#569CD6;">public class</span> <span style="color:#4EC9B0;">ResourceNotFoundException</span> <span style="color:#569CD6;">extends</span> <span style="color:#4EC9B0;">BaseApiException</span> {
+  <span style="color:#569CD6;">public</span> <span style="color:#DCDCAA;">ResourceNotFoundException</span>(<span style="color:#4EC9B0;">String</span> resourceId) {
+    <span style="color:#C586C0;">super</span>(<span style="color:#CE9178;">"Recurso no encontrado: "</span> + resourceId, <span style="color:#CE9178;">"R_404"</span>);
+  }
+}
+
+<span style="color:#569CD6;">public class</span> <span style="color:#4EC9B0;">InvalidInputException</span> <span style="color:#569CD6;">extends</span> <span style="color:#4EC9B0;">BaseApiException</span> {
+    <span style="color:#6A9955;">// ...</span>
+}</code></pre>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold mb-3 main-title">Internacionalización (i18n) de Mensajes</h3>
+                        <p class="text-sm text-slate-600 mb-3">El `MessageSource` de Spring traduce códigos de error a mensajes amigables según el `Locale` del cliente, haciendo la API globalmente amigable.</p>
+                        <div class="flex items-center space-x-2 mb-3 p-1 bg-slate-200 rounded-lg w-min">
+                            <button id="lang-en" class="interactive-btn text-sm">EN</button>
+                            <button id="lang-es" class="interactive-btn text-sm active">ES</button>
+                        </div>
+                        <pre class="code-block"><code id="i18n-message"></code></pre>
+                    </div>
+                    <div class="md:col-span-2 card p-6 bg-gray-50/50">
+                        <h3 class="text-2xl font-bold mb-4 main-title text-center">Pilares de una Estrategia de Errores Profesional</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-red-500 shadow-sm">
+                                <h4 class="font-bold text-lg main-title">1. Claridad</h4>
+                                <p class="text-sm text-slate-600 mt-1">Usa el código HTTP correcto y un mensaje que defina el problema exacto para el consumidor de la API.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-emerald-500 shadow-sm">
+                                <h4 class="font-bold text-lg main-title">2. Consistencia</h4>
+                                <p class="text-sm text-slate-600 mt-1">Define un contrato de error (DTO) y úsalo para todas las respuestas 4xx y 5xx. La predictibilidad es clave.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-sky-500 shadow-sm">
+                                <h4 class="font-bold text-lg main-title">3. Seguridad</h4>
+                                <p class="text-sm text-slate-600 mt-1">Nunca expongas trazas de error, versiones de librerías o información sensible que pueda ayudar a un atacante.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-purple-500 shadow-sm">
+                                <h4 class="font-bold text-lg main-title">4. Trazabilidad</h4>
+                                <p class="text-sm text-slate-600 mt-1">Registra los errores 5xx con un ID de correlación único para trazar la petición a través de los logs y monitoreo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        function showSection(targetId, isInitial = false) {
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                if (!isInitial) {
+                    targetSection.style.animation = 'fadeIn 0.5s ease-in-out';
+                }
+                // Inicializar elementos interactivos solo cuando su sección está activa
+                if (targetId === 'pillar4') updatePillar4View();
+                if (targetId === 'pillar5') setLang('es'); // Default to Spanish for i18n
+            }
+
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.dataset.target === targetId);
+            });
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = e.currentTarget.dataset.target;
+                showSection(targetId);
+            });
+        });
+
+        // --- Pillar 4: Interactive Error Response ---
+        const errorData = {
+            validation: {
+                bad: `<span style="color:#6A9955;">// HTTP 400 Bad Request (por defecto)</span>\n{\n  <span style="color:#9CDCFE;">"timestamp"</span>: <span style="color:#CE9178;">"2025-10-26T10:00:00Z"</span>,\n  <span style="color:#9CDCFE;">"status"</span>: <span style="color:#B5CEA8;">400</span>,\n  <span style="color:#9CDCFE;">"error"</span>: <span style="color:#CE9178;">"Bad Request"</span>,\n  <span style="color:#9CDCFE;">"message"</span>: <span style="color:#CE9178;">"Validation failed for argument..."</span>,\n  <span style="color:#9CDCFE;">"path"</span>: <span style="color:#CE9178;">"/api/users"</span>\n}`,
+                good: `<span style="color:#6A9955;">// HTTP 400 Bad Request (personalizada)</span>\n{\n  <span style="color:#9CDCFE;">"timestamp"</span>: <span style="color:#CE9178;">"2025-10-26T10:00:00Z"</span>,\n  <span style="color:#9CDCFE;">"status"</span>: <span style="color:#B5CEA8;">400</span>,\n  <span style="color:#9CDCFE;">"error"</span>: <span style="color:#CE9178;">"Validation Failed"</span>,\n  <span style="color:#9CDCFE;">"message"</span>: <span style="color:#CE9178;">"Uno o más campos tienen errores."</span>,\n  <span style="color:#9CDCFE;">"errorCode"</span>: <span style="color:#CE9178;">"INVALID_INPUT"</span>,\n  <span style="color:#9CDCFE;">"errors"</span>: [\n    { <span style="color:#9CDCFE;">"field"</span>: <span style="color:#CE9178;">"email"</span>, <span style="color:#9CDCFE;">"message"</span>: <span style="color:#CE9178;">"Formato inválido."</span> },\n    { <span style="color:#9CDCFE;">"field"</span>: <span style="color:#CE9178;">"username"</span>, <span style="color:#9CDCFE;">"message"</span>: <span style="color:#CE9178;">"Mínimo 3 caracteres."</span> }\n  ]\n}`,
+                best: `<span style="color:#6A9955;">// HTTP 400 Bad Request (RFC 7807)</span>\n{\n  <span style="color:#9CDCFE;">"type"</span>: <span style="color:#CE9178;">"https://api.ejemplo.com/errors/invalid-parameters"</span>,\n  <span style="color:#9CDCFE;">"title"</span>: <span style="color:#CE9178;">"Parámetros de Solicitud Inválidos"</span>,\n  <span style="color:#9CDCFE;">"status"</span>: <span style="color:#B5CEA8;">400</span>,\n  <span style="color:#9CDCFE;">"detail"</span>: <span style="color:#CE9178;">"Uno o más parámetros tienen valores inválidos."</span>,\n  <span style="color:#9CDCFE;">"instance"</span>: <span style="color:#CE9178;">"/api/users"</span>,\n  <span style="color:#9CDCFE;">"violations"</span>: [\n    { <span style="color:#9CDCFE;">"field"</span>: <span style="color:#CE9178;">"email"</span>, <span style="color:#9CDCFE;">"message"</span>: <span style="color:#CE9178;">"El formato es incorrecto."</span> },\n    { <span style="color:#9CDCFE;">"field"</span>: <span style="color:#CE9178;">"username"</span>, <span style="color:#9CDCFE;">"message"</span>: <span style="color:#CE9178;">"Debe tener al menos 3 caracteres."</span> }\n  ]\n}`
+            },
+            notFound: {
+                bad: `<span style="color:#6A9955;">// HTTP 404 Not Found (texto plano o vacío)</span>\n`,
+                good: `<span style="color:#6A9955;">// HTTP 404 Not Found (personalizada)</span>\n{\n  <span style="color:#9CDCFE;">"timestamp"</span>: <span style="color:#CE9178;">"2025-10-26T10:00:00Z"</span>,\n  <span style="color:#9CDCFE;">"status"</span>: <span style="color:#B5CEA8;">404</span>,\n  <span style="color:#9CDCFE;">"error"</span>: <span style="color:#CE9178;">"Resource Not Found"</span>,\n  <span style="color:#9CDCFE;">"message"</span>: <span style="color:#CE9178;">"El usuario con ID '123' no fue encontrado."</span>,\n  <span style="color:#9CDCFE;">"errorCode"</span>: <span style="color:#CE9178;">"USER_NOT_FOUND"</span>\n}`,
+                best: `<span style="color:#6A9955;">// HTTP 404 Not Found (RFC 7807)</span>\n{\n  <span style="color:#9CDCFE;">"type"</span>: <span style="color:#CE9178;">"https://api.ejemplo.com/errors/not-found"</span>,\n  <span style="color:#9CDCFE;">"title"</span>: <span style="color:#CE9178;">"Recurso No Encontrado"</span>,\n  <span style="color:#9CDCFE;">"status"</span>: <span style="color:#B5CEA8;">404</span>,\n  <span style="color:#9CDCFE;">"detail"</span>: <span style="color:#CE9178;">"El usuario no pudo ser localizado."</span>,\n  <span style="color:#9CDCFE;">"instance"</span>: <span style="color:#CE9178;">"/api/users/123"</span>,\n  <span style="color:#9CDCFE;">"resourceId"</span>: <span style="color:#CE9178;">"123"</span>\n}`
+            },
+            conflict: {
+                bad: `<span style="color:#6A9955;">// HTTP 409 Conflict (genérico)</span>\n{\n  <span style="color:#9CDCFE;">"error"</span>: <span style="color:#CE9178;">"El email ya existe"</span>\n}`,
+                good: `<span style="color:#6A9955;">// HTTP 409 Conflict (personalizada)</span>\n{\n  <span style="color:#9CDCFE;">"timestamp"</span>: <span style="color:#CE9178;">"2025-10-26T10:00:00Z"</span>,\n  <span style="color:#9CDCFE;">"status"</span>: <span style="color:#B5CEA8;">409</span>,\n  <span style="color:#9CDCFE;">"error"</span>: <span style="color:#CE9178;">"Conflict"</span>,\n  <span style="color:#9CDCFE;">"message"</span>: <span style="color:#CE9178;">"Un usuario con el email 'test@ejemplo.com' ya existe."</span>,\n  <span style="color:#9CDCFE;">"errorCode"</span>: <span style="color:#CE9178;">"DUPLICATE_EMAIL"</span>\n}`,
+                best: `<span style="color:#6A9955;">// HTTP 409 Conflict (RFC 7807)</span>\n{\n  <span style="color:#9CDCFE;">"type"</span>: <span style="color:#CE9178;">"https://api.ejemplo.com/errors/duplicate-resource"</span>,\n  <span style="color:#9CDCFE;">"title"</span>: <span style="color:#CE9178;">"Conflicto de Recurso Existente"</span>,\n  <span style="color:#9CDCFE;">"status"</span>: <span style="color:#B5CEA8;">409</span>,\n  <span style="color:#9CDCFE;">"detail"</span>: <span style="color:#CE9178;">"No se puede crear el recurso porque ya existe."</span>,\n  <span style="color:#9CDCFE;">"instance"</span>: <span style="color:#CE9178;">"/api/users"</span>,\n  <span style="color:#9CDCFE;">"conflictingField"</span>: <span style="color:#CE9178;">"email"</span>,\n  <span style="color:#9CDCFE;">"value"</span>: <span style="color:#CE9178;">"test@ejemplo.com"</span>\n}`
+            }
+        };
+        const explanations = {
+            bad: '<strong>Básico:</strong> Ambiguo y sin contexto. No permite al cliente saber qué campo falló ni por qué. Es difícil de usar programáticamente.',
+            good: '<strong>Mejorado:</strong> Más estructurado, con un código de error y detalles. Permite construir lógica básica de manejo de errores en el cliente.',
+            best: '<strong>Profesional (RFC 7807):</strong> Sigue un estándar de la industria. Proporciona un tipo URI para el error, un título legible y detalles específicos. Es predecible, rico en detalles y permite a los clientes construir lógica robusta y extensible.'
+        };
+        const qualitySelector = document.getElementById('errorQualitySelector');
+        const typeSelector = document.getElementById('errorTypeSelector');
+        const responseOutput = document.getElementById('responseOutput');
+        const errorExplanation = document.getElementById('errorExplanation');
+
+        function updatePillar4View() {
+            const selectedQuality = qualitySelector.querySelector('.active')?.dataset.quality || 'best';
+            const selectedType = typeSelector.value;
+            if (responseOutput) {
+                responseOutput.innerHTML = errorData[selectedType][selectedQuality];
+            }
+            if (errorExplanation) {
+                errorExplanation.innerHTML = explanations[selectedQuality];
+            }
+        }
+
+        if (qualitySelector) {
+            qualitySelector.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    qualitySelector.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    updatePillar4View();
+                }
+            });
+        }
+        if(typeSelector) {
+            typeSelector.addEventListener('change', updatePillar4View);
+        }
+
+        // --- Pillar 5: Interactive i18n ---
+        const i18nMessages = {
+            en: `<span style="color:#6A9955;">// src/main/resources/messages_en.properties</span>
+<span style="color:#9CDCFE;">user.not.found</span>=<span style="color:#CE9178;">User with ID '{0}' was not found.</span>
+<span style="color:#9CDCFE;">validation.email.invalid</span>=<span style="color:#CE9178;">Email format is invalid.</span>`,
+            es: `<span style="color:#6A9955;">// src/main/resources/messages_es.properties</span>
+<span style="color:#9CDCFE;">user.not.found</span>=<span style="color:#CE9178;">Usuario con ID '{0}' no ha sido encontrado.</span>
+<span style="color:#9CDCFE;">validation.email.invalid</span>=<span style="color:#CE9178;">El formato del correo es inválido.</span>`
+        };
+        const btnEn = document.getElementById('lang-en');
+        const btnEs = document.getElementById('lang-es');
+        const i18nMessageEl = document.getElementById('i18n-message');
+
+        function setLang(lang) {
+            if (!i18nMessageEl) return;
+            i18nMessageEl.innerHTML = i18nMessages[lang];
+            btnEn.classList.toggle('active', lang === 'en');
+            btnEs.classList.toggle('active', lang === 'es');
+        }
+
+        if(btnEn) btnEn.addEventListener('click', () => setLang('en'));
+        if(btnEs) btnEs.addEventListener('click', () => setLang('es'));
+
+        // Initial load
+        showSection('pillar1', true);
+    });
+</script>

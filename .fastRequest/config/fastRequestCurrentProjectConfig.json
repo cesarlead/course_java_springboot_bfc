@@ -13,6 +13,24 @@
 				}
 			],
 			"name":"demo"
+		},
+		{
+			"hostGroup":[
+				{
+					"env":"local",
+					"url":"http://localhost:8580"
+				}
+			],
+			"name":"demo (1)"
+		},
+		{
+			"hostGroup":[
+				{
+					"env":"local",
+					"url":"http://localhost:9091"
+				}
+			],
+			"name":"health"
 		}
 	],
 	"envList":[
@@ -25,7 +43,9 @@
 	"postScript":"",
 	"preScript":"",
 	"projectList":[
-		"demo"
+		"demo",
+		"demo (1)",
+		"health"
 	],
 	"searchTruncatedCode":"",
 	"syncModel":{
