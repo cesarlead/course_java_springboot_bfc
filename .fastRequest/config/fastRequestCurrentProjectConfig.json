@@ -31,6 +31,15 @@
 				}
 			],
 			"name":"health"
+		},
+		{
+			"hostGroup":[
+				{
+					"env":"local",
+					"url":"http://localhost:8582"
+				}
+			],
+			"name":"communication"
 		}
 	],
 	"envList":[
@@ -45,7 +54,8 @@
 	"projectList":[
 		"demo",
 		"demo (1)",
-		"health"
+		"health",
+		"communication"
 	],
 	"searchTruncatedCode":"",
 	"syncModel":{

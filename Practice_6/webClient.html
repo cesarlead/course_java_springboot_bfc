@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicación con APIs en Spring Boot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #f1f5f9;      /* slate-100 */
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a; /* slate-900 */
+            --text-secondary: #475569;/* slate-600 */
+            --accent: #3b82f6;      /* blue-500 */
+            --accent-hover: #2563eb;/* blue-600 */
+            --border-color: #e2e8f0; /* slate-200 */
+            --code-bg: #1e293b;      /* slate-800 */
+            --code-header: #334155;  /* slate-700 */
+            --code-text: #e2e8f0;    /* slate-200 */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+        }
+        .sidebar-link {
+            transition: all 0.2s ease-in-out;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-link.active, .sidebar-link:hover {
+            color: var(--accent);
+            border-left-color: var(--accent);
+            background-color: #eff6ff; /* blue-50 */
+        }
+        .sidebar-link.active { font-weight: 600; }
+
+        .code-block-container {
+            background-color: var(--code-bg);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid var(--code-header);
+        }
+        .code-block-header {
+            background-color: var(--code-header);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .code-block-title {
+            color: #94a3b8; /* slate-400 */
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .copy-btn {
+            background-color: #475569; /* slate-600 */
+            color: var(--code-text);
+            border: none;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover { background-color: #64748b; /* slate-500 */ }
+
+        pre code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            padding: 1rem;
+            display: block;
+            overflow-x: auto;
+            color: var(--code-text);
+        }
+        .code-keyword { color: #c084fc; } /* purple-400 */
+        .code-string { color: #6ee7b7; } /* emerald-300 */
+        .code-number { color: #facc15; } /* yellow-400 */
+        .code-comment { color: #9ca3af; } /* gray-400 */
+        .code-class { color: #fb923c; } /* orange-400 */
+        .code-method { color: #60a5fa; } /* blue-400 */
+        .code-annotation { color: #f87171; } /* red-400 */
+
+        .tab.active {
+            background-color: var(--accent);
+            color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<div class="relative flex min-h-screen">
+    <!-- Sidebar Navigation -->
+    <aside class="hidden lg:block w-72 flex-shrink-0 sticky top-0 h-screen overflow-y-auto bg-white border-r border-slate-200">
+        <div class="p-6">
+            <h2 class="text-xl font-bold text-blue-600">Comunicación con APIs</h2>
+            <p class="text-sm text-slate-500">GlobalDesk | Ing. César Fernández</p>
+        </div>
+        <nav id="desktop-nav" class="px-4 flex flex-col space-y-1">
+            <a href="#conceptos" class="sidebar-link block py-2.5 px-4 rounded-md text-slate-700">
+                <span class="mr-2.5">💡</span> Conceptos Fundamentales
+            </a>
+            <a href="#clientes" class="sidebar-link block py-2.5 px-4 rounded-md text-slate-700">
+                <span class="mr-2.5">🔄</span> Clientes REST
+            </a>
+            <a href="#resiliencia" class="sidebar-link block py-2.5 px-4 rounded-md text-slate-700">
+                <span class="mr-2.5">🛡️</span> Resiliencia y Timeouts
+            </a>
+            <a href="#optimización" class="sidebar-link block py-2.5 px-4 rounded-md text-slate-700">
+                <span class="mr-2.5">⚡</span> Optimización y Caché
+            </a>
+            <a href="#demo" class="sidebar-link block py-2.5 px-4 rounded-md text-slate-700">
+                <span class="mr-2.5">🚀</span> Demo Práctica
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 sm:p-8 md:p-12">
+
+        <!-- Mobile Header -->
+        <header class="lg:hidden mb-8 p-4 bg-white rounded-lg shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-lg font-bold text-blue-600">Comunicación con APIs</h1>
+                    <p class="text-sm text-slate-500">Spring Boot</p>
+                </div>
+                <select id="mobile-nav" class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5">
+                    <option value="#conceptos">Conceptos</option>
+                    <option value="#clientes">Clientes REST</option>
+                    <option value="#resiliencia">Resiliencia</option>
+                    <option value="#optimización">Optimización</option>
+                    <option value="#demo">Demo Práctica</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="max-w-5xl mx-auto">
+            <!-- Section 1: Conceptos Fundamentales -->
+            <section id="conceptos" class="mb-20 scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-3 flex items-center"><span class="text-2xl mr-3">💡</span>Conceptos Fundamentales</h2>
+                <p class="text-slate-600 mb-8 max-w-3xl">Antes de escribir código, es crucial entender los paradigmas de comunicación. Esta sección explora las bases que definen cómo los servicios interactúan entre sí.</p>
+
+                <div class="p-8 bg-white rounded-lg border border-slate-200 shadow-sm">
+                    <h3 class="text-xl font-bold mb-4">Síncrona vs. Asíncrona</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                            <tr class="bg-slate-50">
+                                <th class="p-3 font-semibold text-sm border-b">Característica</th>
+                                <th class="p-3 font-semibold text-sm border-b">Comunicación Síncrona (Bloqueante)</th>
+                                <th class="p-3 font-semibold text-sm border-b">Comunicación Asíncrona (No Bloqueante)</th>
+                            </tr>
+                            </thead>
+                            <tbody class="text-slate-700 text-sm">
+                            <tr>
+                                <td class="p-3 border-b font-medium">Flujo</td>
+                                <td class="p-3 border-b">El cliente envía una petición y **espera (bloquea)** hasta recibir una respuesta.</td>
+                                <td class="p-3 border-b">El cliente envía una petición y **continúa** con otras tareas. La respuesta se maneja después.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-b font-medium">Recursos</td>
+                                <td class="p-3 border-b">Consume un hilo por cada petición activa. Ineficiente para alta concurrencia.</td>
+                                <td class="p-3 border-b">Usa un número reducido de hilos para manejar múltiples peticiones. Altamente escalable.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-b font-medium">Ejemplo</td>
+                                <td class="p-3 border-b">`RestTemplate` (legado), una llamada a un método tradicional.</td>
+                                <td class="p-3 border-b">`WebClient` (reactivo), mensajería con RabbitMQ/Kafka.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <!-- RestTemplate vs RestClient -->
+            <section id="clientes-sincronos" class="mb-20 scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-3 flex items-center"><span class="text-2xl mr-3">🕰️</span>Clientes Síncronos: RestTemplate vs. RestClient</h2>
+                <p class="text-slate-600 mb-8 max-w-3xl">Antes del auge de la programación reactiva, `RestTemplate` fue el estándar. Ahora, `RestClient` ofrece una API fluida y moderna para el mismo paradigma síncrono y bloqueante, simplificando el código.</p>
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                    <div class="flex border-b border-slate-200 mb-6">
+                        <button class="tab-legacy py-2 px-5 font-semibold text-slate-600 rounded-t-md active" data-tab="config-legacy">Configuración</button>
+                        <button class="tab-legacy py-2 px-5 font-semibold text-slate-600 rounded-t-md" data-tab="get-legacy">Solicitud GET</button>
+                        <button class="tab-legacy py-2 px-5 font-semibold text-slate-600 rounded-t-md" data-tab="post-legacy">Solicitud POST</button>
+                    </div>
+                    <div id="code-content-legacy">
+                        <!-- Configuración -->
+                        <div id="config-legacy-content">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">Configuración: RestTemplate (Bean)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-annotation">@Configuration</span>
+<span class="code-keyword">public</span> <span class="code-keyword">class</span> <span class="code-class">AppConfig</span> {
+    <span class="code-annotation">@Bean</span>
+    <span class="code-keyword">public</span> <span class="code-class">RestTemplate</span> <span class="code-method">restTemplate</span>(<span class="code-class">RestTemplateBuilder</span> builder) {
+        <span class="code-keyword">return</span> builder
+            .<span class="code-method">rootUri</span>(<span class="code-string">"https://api.cesarlead.com"</span>)
+            .<span class="code-method">build</span>();
+    }
+}</code></pre>
+                                </div>
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">Configuración: RestClient (Bean)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-annotation">@Configuration</span>
+<span class="code-keyword">public</span> <span class="code-keyword">class</span> <span class="code-class">AppConfig</span> {
+    <span class="code-annotation">@Bean</span>
+    <span class="code-keyword">public</span> <span class="code-class">RestClient</span> <span class="code-method">restClient</span>() {
+        <span class="code-keyword">return</span> <span class="code-class">RestClient</span>.<span class="code-method">builder</span>()
+            .<span class="code-method">baseUrl</span>(<span class="code-string">"https://api.cesarlead.com"</span>)
+            .<span class="code-method">build</span>();
+    }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- GET -->
+                        <div id="get-legacy-content" class="hidden">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">GET: RestTemplate (Imperativo)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-keyword">public</span> <span class="code-class">ItemDTO</span> <span class="code-method">getItemById</span>(<span class="code-class">Long</span> id) {
+    <span class="code-class">String</span> url = <span class="code-string">"/items/{id}"</span>;
+    <span class="code-keyword">return</span> restTemplate.<span class="code-method">getForObject</span>(url, <span class="code-class">ItemDTO</span>.<span class="code-keyword">class</span>, id);
+}</code></pre>
+                                </div>
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">GET: RestClient (API Fluida)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-keyword">public</span> <span class="code-class">ItemDTO</span> <span class="code-method">getItemById</span>(<span class="code-class">Long</span> id) {
+    <span class="code-keyword">return</span> restClient.<span class="code-method">get</span>()
+        .<span class="code-method">uri</span>(<span class="code-string">"/items/{id}"</span>, id)
+        .<span class="code-method">retrieve</span>()
+        .<span class="code-method">body</span>(<span class="code-class">ItemDTO</span>.<span class="code-keyword">class</span>);
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- POST -->
+                        <div id="post-legacy-content" class="hidden">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">POST: RestTemplate (Imperativo)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-keyword">public</span> <span class="code-class">ItemDTO</span> <span class="code-method">createItem</span>(<span class="code-class">ItemDTO</span> newItem) {
+    <span class="code-class">String</span> url = <span class="code-string">"/items"</span>;
+    <span class="code-keyword">return</span> restTemplate.<span class="code-method">postForObject</span>(url, newItem, <span class="code-class">ItemDTO</span>.<span class="code-keyword">class</span>);
+}</code></pre>
+                                </div>
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">POST: RestClient (API Fluida)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-keyword">public</span> <span class="code-class">ItemDTO</span> <span class="code-method">createItem</span>(<span class="code-class">ItemDTO</span> newItem) {
+    <span class="code-keyword">return</span> restClient.<span class="code-method">post</span>()
+        .<span class="code-method">uri</span>(<span class="code-string">"/items"</span>)
+        .<span class="code-method">contentType</span>(MediaType.APPLICATION_JSON)
+        .<span class="code-method">body</span>(newItem)
+        .<span class="code-method">retrieve</span>()
+        .<span class="code-method">body</span>(<span class="code-class">ItemDTO</span>.<span class="code-keyword">class</span>);
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Clientes REST -->
+            <section id="clientes" class="mb-20 scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-3 flex items-center"><span class="text-2xl mr-3">🔄</span>Clientes REST: WebClient vs. Feign</h2>
+                <p class="text-slate-600 mb-8 max-w-3xl">Spring Boot ofrece dos enfoques modernos para consumir APIs REST: el reactivo `WebClient` y el declarativo `OpenFeign`. Compara sus implementaciones y filosofías.</p>
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                    <div class="flex border-b border-slate-200 mb-6">
+                        <button class="tab py-2 px-5 font-semibold text-slate-600 rounded-t-md active" data-tab="config">Configuración</button>
+                        <button class="tab py-2 px-5 font-semibold text-slate-600 rounded-t-md" data-tab="get">Solicitud GET</button>
+                        <button class="tab py-2 px-5 font-semibold text-slate-600 rounded-t-md" data-tab="post">Solicitud POST</button>
+                    </div>
+                    <div id="code-content">
+                        <!-- Configuración -->
+                        <div id="config-content">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">Configuración: WebClient (Bean)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-annotation">@Configuration</span>
+<span class="code-keyword">public</span> <span class="code-keyword">class</span> <span class="code-class">WebClientConfig</span> {
+    <span class="code-annotation">@Bean</span>
+    <span class="code-keyword">public</span> <span class="code-class">WebClient</span> <span class="code-method">webClient</span>() {
+        <span class="code-keyword">return</span> <span class="code-class">WebClient</span>.<span class="code-method">builder</span>()
+            .<span class="code-method">baseUrl</span>(<span class="code-string">"https://api.cesarlead.com"</span>)
+            .<span class="code-method">build</span>();
+    }
+}</code></pre>
+                                </div>
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">Interfaz: OpenFeign (Declarativo)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-annotation">@FeignClient</span>(name=<span class="code-string">"example"</span>, url=<span class="code-string">"https://api.cesarlead.com"</span>)
+<span class="code-keyword">public</span> <span class="code-keyword">interface</span> <span class="code-class">ExampleApiClient</span> {
+    <span class="code-comment">// ... métodos de la API</span>
+}
+
+<span class="code-comment">// En la clase de aplicación principal:</span>
+<span class="code-annotation">@EnableFeignClients</span>
+<span class="code-annotation">@SpringBootApplication</span>
+<span class="code-keyword">public</span> <span class="code-keyword">class</span> <span class="code-class">Application</span> {}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- GET -->
+                        <div id="get-content" class="hidden">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">GET: WebClient (Reactivo)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-keyword">public</span> <span class="code-class">Mono</span>&lt;<span class="code-class">ItemDTO</span>&gt; <span class="code-method">getItemById</span>(<span class="code-class">Long</span> id) {
+    <span class="code-keyword">return</span> webClient.<span class="code-method">get</span>()
+        .<span class="code-method">uri</span>(<span class="code-string">"/items/{id}"</span>, id)
+        .<span class="code-method">retrieve</span>()
+        .<span class="code-method">bodyToMono</span>(<span class="code-class">ItemDTO</span>.<span class="code-keyword">class</span>);
+}</code></pre>
+                                </div>
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">GET: OpenFeign (Como un método local)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-annotation">@GetMapping</span>(<span class="code-string">"/items/{id}"</span>)
+<span class="code-class">ItemDTO</span> <span class="code-method">getItemById</span>(<span class="code-annotation">@PathVariable</span>(<span class="code-string">"id"</span>) <span class="code-class">Long</span> id);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- POST -->
+                        <div id="post-content" class="hidden">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">POST: WebClient (Reactivo)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-keyword">public</span> <span class="code-class">Mono</span>&lt;<span class="code-class">ItemDTO</span>&gt; <span class="code-method">createItem</span>(<span class="code-class">ItemDTO</span> newItem) {
+    <span class="code-keyword">return</span> webClient.<span class="code-method">post</span>()
+        .<span class="code-method">uri</span>(<span class="code-string">"/items"</span>)
+        .<span class="code-method">bodyValue</span>(newItem)
+        .<span class="code-method">retrieve</span>()
+        .<span class="code-method">bodyToMono</span>(<span class="code-class">ItemDTO</span>.<span class="code-keyword">class</span>);
+}</code></pre>
+                                </div>
+                                <div class="code-block-container">
+                                    <div class="code-block-header"><span class="code-block-title">POST: OpenFeign (Como un método local)</span><button class="copy-btn">Copiar</button></div>
+                                    <pre><code class="language-java"><span class="code-annotation">@PostMapping</span>(<span class="code-string">"/items"</span>)
+<span class="code-class">ItemDTO</span> <span class="code-method">createItem</span>(<span class="code-annotation">@RequestBody</span> <span class="code-class">ItemDTO</span> newItem);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Resiliencia -->
+            <section id="resiliencia" class="mb-20 scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-3 flex items-center"><span class="text-2xl mr-3">🛡️</span>Resiliencia: Manejo de Errores y Timeouts</h2>
+                <p class="text-slate-600 mb-8 max-w-3xl">Una comunicación robusta debe anticipar fallos. Aprende a manejar errores de red y a configurar timeouts para evitar que tu aplicación quede bloqueada esperando una respuesta indefinidamente.</p>
+                <div class="space-y-8">
+                    <div class="p-8 bg-white rounded-lg border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-xl mb-3 text-slate-800">Manejo de Errores Específicos con WebClient</h4>
+                        <p class="text-slate-600 mb-4 text-sm">El método `onStatus` permite interceptar respuestas HTTP de error (4xx, 5xx) y transformarlas en una excepción personalizada de tu aplicación, en lugar de la `WebClientResponseException` genérica.</p>
+                        <div class="code-block-container">
+                            <div class="code-block-header"><span class="code-block-title">WebClient: Error Handling con onStatus</span><button class="copy-btn">Copiar</button></div>
+                            <pre><code class="language-java">webClient.get().uri(<span class="code-string">"/items/999"</span>)
+    .retrieve()
+    .<span class="code-method">onStatus</span>(
+        <span class="code-class">HttpStatusCode</span>::isError, <span class="code-comment">// Predicado: se activa para cualquier código de error</span>
+        clientResponse -> <span class="code-class">Mono</span>.<span class="code-method">error</span>(
+            <span class="code-keyword">new</span> <span class="code-class">ItemNotFoundException</span>(
+                <span class="code-string">"Item no encontrado, status: "</span> + clientResponse.<span class="code-method">statusCode</span>()
+            )
+        )
+    )
+    .bodyToMono(<span class="code-class">ItemDTO</span>.<span class="code-keyword">class</span>);</code></pre>
+                        </div>
+                    </div>
+                    <div class="p-8 bg-white rounded-lg border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-xl mb-3 text-slate-800">Configuración Global de Timeouts</h4>
+                        <p class="text-slate-600 mb-4 text-sm">Es una práctica fundamental establecer timeouts para evitar que los hilos se queden bloqueados. Esto se configura en el `HttpClient` que `WebClient` usa internamente.</p>
+                        <div class="code-block-container">
+                            <div class="code-block-header"><span class="code-block-title">WebClient: Configuración de HttpClient con Timeouts</span><button class="copy-btn">Copiar</button></div>
+                            <pre><code class="language-java"><span class="code-class">HttpClient</span> httpClient = <span class="code-class">HttpClient</span>.<span class="code-method">create</span>()
+    .<span class="code-method">option</span>(<span class="code-class">ChannelOption</span>.CONNECT_TIMEOUT_MILLIS, <span class="code-number">5000</span>) <span class="code-comment">// 5 segundos para conectar</span>
+    .<span class="code-method">responseTimeout</span>(<span class="code-class">Duration</span>.<span class="code-method">ofSeconds</span>(<span class="code-number">10</span>)) <span class="code-comment">// 10 segundos para recibir respuesta</span>
+    .<span class="code-method">doOnConnected</span>(conn ->
+        conn.<span class="code-method">addHandlerLast</span>(<span class="code-keyword">new</span> <span class="code-class">ReadTimeoutHandler</span>(<span class="code-number">10</span>, <span class="code-class">TimeUnit</span>.SECONDS))
+            .<span class="code-method">addHandlerLast</span>(<span class="code-keyword">new</span> <span class="code-class">WriteTimeoutHandler</span>(<span class="code-number">10</span>, <span class="code-class">TimeUnit</span>.SECONDS))
+    );
+
+<span class="code-class">WebClient</span> webClient = <span class="code-class">WebClient</span>.<span class="code-method">builder</span>()
+    .<span class="code-method">clientConnector</span>(<span class="code-keyword">new</span> <span class="code-class">ReactorClientHttpConnector</span>(httpClient))
+    .<span class="code-method">build</span>();</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Optimización y Caché -->
+            <section id="optimización" class="mb-20 scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-3 flex items-center"><span class="text-2xl mr-3">⚡</span>Optimización y Caché</h2>
+                <p class="text-slate-600 mb-8 max-w-3xl">Reduce la latencia y la carga en los servicios externos mediante estrategias de caché. Evita realizar la misma petición de red una y otra vez si los datos no cambian con frecuencia.</p>
+                <div class="bg-white p-8 rounded-lg border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-xl mb-3">Implementación con `@Cacheable` de Spring</h3>
+                    <p class="text-slate-600 mb-6 text-sm">Spring Boot simplifica enormemente el cacheo con anotaciones. El proceso consta de dos pasos sencillos:</p>
+
+                    <h4 class="font-semibold text-slate-800 mb-2">Paso 1: Habilitar el soporte de Caché</h4>
+                    <p class="text-slate-600 mb-4 text-sm">Añade la anotación `@EnableCaching` a tu clase principal de configuración o aplicación.</p>
+                    <div class="code-block-container mb-6">
+                        <div class="code-block-header"><span class="code-block-title">Habilitar Caché Globalmente</span><button class="copy-btn">Copiar</button></div>
+                        <pre><code class="language-java"><span class="code-annotation">@EnableCaching</span>
+<span class="code-annotation">@SpringBootApplication</span>
+<span class="code-keyword">public</span> <span class="code-keyword">class</span> <span class="code-class">Application</span> {
+    <span class="code-comment">// ...</span>
+}</code></pre>
+                    </div>
+
+                    <h4 class="font-semibold text-slate-800 mb-2">Paso 2: Anotar el método que realiza la llamada externa</h4>
+                    <p class="text-slate-600 mb-4 text-sm">Usa `@Cacheable` en el método. La primera vez que se llame con un `id` específico, el método se ejecutará y su resultado se guardará en el caché llamado "items". En llamadas posteriores con el mismo `id`, el resultado se devolverá directamente desde el caché sin ejecutar el método.</p>
+                    <div class="code-block-container">
+                        <div class="code-block-header"><span class="code-block-title">Anotación @Cacheable en el Servicio</span><button class="copy-btn">Copiar</button></div>
+                        <pre><code class="language-java"><span class="code-annotation">@Service</span>
+<span class="code-keyword">public</span> <span class="code-keyword">class</span> <span class="code-class">ItemService</span> {
+
+    <span class="code-comment">// ... inyección de WebClient o Feign Client</span>
+
+    <span class="code-annotation">@Cacheable</span>(cacheNames = <span class="code-string">"items"</span>, key = <span class="code-string">"#id"</span>)
+    <span class="code-keyword">public</span> <span class="code-class">ItemDTO</span> <span class="code-method">getItemById</span>(<span class="code-class">Long</span> id) {
+        <span class="code-comment">// Esta lógica SÓLO se ejecuta si el 'id' no está en caché.</span>
+        System.<span class="code-method">out</span>.<span class="code-method">println</span>(<span class="code-string">"Llamando a la API externa para el ID: "</span> + id);
+        <span class="code-keyword">return</span> <span class="code-method">callExternalApi</span>(id); <span class="code-comment">// Método que realmente usa WebClient/Feign</span>
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Demo -->
+            <section id="demo" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-3 flex items-center"><span class="text-2xl mr-3">🚀</span>Demo Práctica: Consumo y Caché</h2>
+                <p class="text-slate-600 mb-8 max-w-3xl">Experimenta el efecto del caché en tiempo real. La primera petición simulará una latencia de red de 2 segundos. La segunda será prácticamente instantánea, demostrando que el dato se sirve desde la memoria.</p>
+                <div class="bg-white p-8 rounded-lg border border-slate-200 shadow-sm">
+                    <div class="flex flex-wrap items-center gap-4 mb-6">
+                        <button id="fetch-btn" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors flex items-center shadow-sm">
+                            <span class="mr-2">📡</span> 1. Consumir API (Post #1)
+                        </button>
+                        <button id="cache-btn" class="bg-slate-300 text-slate-500 font-bold py-2 px-4 rounded-lg transition-colors cursor-not-allowed" disabled>
+                            <span class="mr-2">⚡</span> 2. Probar Caché (Obtener Post #1)
+                        </button>
+                        <button id="reset-btn" class="bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-700 transition-colors flex items-center shadow-sm">
+                            <span class="mr-2">🔄</span> Reiniciar
+                        </button>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold mb-2 text-slate-800">Registro de Eventos:</h4>
+                            <div id="log-output" class="w-full h-52 bg-slate-800 text-white font-mono text-xs p-4 rounded-lg overflow-y-auto">
+                                <span class="text-slate-400">Esperando acciones...</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-2 text-slate-800">Resultado Obtenido:</h4>
+                            <div id="result-output" class="w-full h-52 bg-slate-100 p-4 rounded-lg overflow-y-auto border border-slate-200">
+                                <span class="text-slate-500">Aquí se mostrará la respuesta de la API...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- Sidebar Active Link on Scroll ---
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('#desktop-nav a');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: "-40% 0px -60% 0px" });
+
+        sections.forEach(section => observer.observe(section));
+
+        // --- Mobile Navigation ---
+        const mobileNav = document.getElementById('mobile-nav');
+        mobileNav.addEventListener('change', (e) => {
+            const targetElement = document.querySelector(e.target.value);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        // --- Code Tabs ---
+        const tabs = document.querySelectorAll('.tab');
+        const codeContents = {
+            config: document.getElementById('config-content'),
+            get: document.getElementById('get-content'),
+            post: document.getElementById('post-content')
+        };
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                Object.values(codeContents).forEach(content => content && content.classList.add('hidden'));
+                if (codeContents[tabName]) codeContents[tabName].classList.remove('hidden');
+            });
+        });
+
+        const tabsLegacy = document.querySelectorAll('.tab-legacy');
+        const contentLegacy = document.getElementById('code-content-legacy').children;
+
+        tabsLegacy.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabsLegacy.forEach(item => item.classList.remove('active'));
+                tab.classList.add('active');
+
+                const targetId = tab.dataset.tab + '-content';
+
+                for (let i = 0; i < contentLegacy.length; i++) {
+                    contentLegacy[i].classList.add('hidden');
+                }
+
+                document.getElementById(targetId).classList.remove('hidden');
+            });
+        });
+
+
+        // --- Copy Code Button ---
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const code = e.target.closest('.code-block-container').querySelector('pre code').innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = button.innerHTML;
+                    button.textContent = '¡Copiado!';
+                    button.classList.add('bg-emerald-500');
+                    setTimeout(() => {
+                        button.textContent = 'Copiar';
+                        button.classList.remove('bg-emerald-500');
+                    }, 2000);
+                });
+            });
+        });
+
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        copyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const code = btn.closest('.code-block-container').querySelector('code').innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = btn.innerText;
+                    btn.innerText = '¡Copiado!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+
+        // --- Demo Práctica ---
+        const fetchBtn = document.getElementById('fetch-btn');
+        const cacheBtn = document.getElementById('cache-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const logOutput = document.getElementById('log-output');
+        const resultOutput = document.getElementById('result-output');
+
+        const fakePostData = { userId: 1, id: 1, title: "sunt aut facere...", body: "quia et suscipit..." };
+        let postInCache = false;
+
+        function logMessage(message, type = 'info') {
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            let color = 'text-sky-400';
+            if (type === 'success') color = 'text-emerald-400';
+            if (type === 'warn') color = 'text-yellow-400';
+            logOutput.innerHTML += `<div><span class="text-slate-500">[${time}]</span> <span class="${color}">${message}</span></div>`;
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+
+        function resetDemo() {
+            postInCache = false;
+            logOutput.innerHTML = '<span class="text-slate-400">Esperando acciones...</span>';
+            resultOutput.innerHTML = '<span class="text-slate-500">Aquí se mostrará la respuesta de la API...</span>';
+
+            fetchBtn.disabled = false;
+            fetchBtn.classList.remove('cursor-not-allowed', 'bg-slate-400');
+            fetchBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+
+            cacheBtn.disabled = true;
+            cacheBtn.classList.add('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
+            cacheBtn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+        }
+
+        resetBtn.addEventListener('click', () => {
+            logMessage('Demo reiniciado.', 'warn');
+            resetDemo();
+        });
+
+        fetchBtn.addEventListener('click', () => {
+            if (postInCache) {
+                logMessage('El dato ya fue consumido y está en caché. Usa "Probar Caché".', 'warn');
+                return;
+            }
+
+            logOutput.innerHTML = '';
+            resultOutput.innerHTML = '<div class="flex items-center justify-center h-full text-slate-500"><span>Cargando...</span></div>';
+            logMessage('Iniciando petición a API externa (simulado)...');
+            fetchBtn.disabled = true;
+            fetchBtn.classList.add('cursor-not-allowed');
+
+            logMessage('Simulando latencia de red (2s)...');
+
+            setTimeout(() => {
+                logMessage('Respuesta 200 OK recibida.', 'success');
+                resultOutput.innerHTML = `<pre class="text-xs text-slate-800">${JSON.stringify(fakePostData, null, 2)}</pre>`;
+                logMessage('Dato almacenado en caché \'posts\' con key \'1\'.', 'success');
+
+                postInCache = true;
+                fetchBtn.disabled = true;
+                fetchBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                fetchBtn.classList.add('bg-slate-400');
+
+                cacheBtn.disabled = false;
+                cacheBtn.classList.remove('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
+                cacheBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+            }, 2000);
+        });
+
+        cacheBtn.addEventListener('click', () => {
+            if (cacheBtn.disabled || !postInCache) return;
+
+            logOutput.innerHTML = '';
+            logMessage('Petición interceptada por @Cacheable...');
+
+            setTimeout(() => {
+                logMessage('¡ÉXITO! Dato encontrado en caché.', 'success');
+                logMessage('Retorno instantáneo desde memoria (0ms).', 'success');
+                resultOutput.innerHTML = `<pre class="text-xs text-slate-800">${JSON.stringify(fakePostData, null, 2)}</pre>`;
+            }, 100); // 100ms para simular una mínima latencia de acceso a memoria
+        });
+    });
+</script>
+</body>
+</html>
