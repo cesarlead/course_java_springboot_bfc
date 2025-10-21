@@ -40,6 +40,15 @@
 				}
 			],
 			"name":"communication"
+		},
+		{
+			"hostGroup":[
+				{
+					"env":"local",
+					"url":"http://localhost:8185"
+				}
+			],
+			"name":"MarketCesarLead"
 		}
 	],
 	"envList":[
@@ -55,7 +64,8 @@
 		"demo",
 		"demo (1)",
 		"health",
-		"communication"
+		"communication",
+		"MarketCesarLead"
 	],
 	"searchTruncatedCode":"",
 	"syncModel":{
