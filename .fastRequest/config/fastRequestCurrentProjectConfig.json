@@ -49,6 +49,15 @@
 				}
 			],
 			"name":"MarketCesarLead"
+		},
+		{
+			"hostGroup":[
+				{
+					"env":"local",
+					"url":"http://localhost:8989"
+				}
+			],
+			"name":"Document"
 		}
 	],
 	"envList":[
@@ -65,7 +74,8 @@
 		"demo (1)",
 		"health",
 		"communication",
-		"MarketCesarLead"
+		"MarketCesarLead",
+		"Document"
 	],
 	"searchTruncatedCode":"",
 	"syncModel":{

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación de APIs con Spring Boot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        .brand-text-dark {
+            color: #004AAD;
+        }
+
+        .brand-text-medium {
+            color: #0073E6;
+        }
+
+        .brand-text-light {
+            color: #66B2FF;
+        }
+
+        .brand-bg-dark {
+            background-color: #004AAD;
+        }
+
+        .brand-bg-medium {
+            background-color: #0073E6;
+        }
+
+        .brand-bg-light {
+            background-color: #66B2FF;
+        }
+
+        .brand-bg-extralight {
+            background-color: #CCE5FF;
+        }
+
+        .brand-border-dark {
+            border-color: #004AAD;
+        }
+
+        .brand-border-medium {
+            border-color: #0073E6;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        .flowchart-step {
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .flowchart-arrow {
+            color: #0073E6;
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="text-gray-700">
+
+<header class="brand-bg-dark text-white p-8 text-center shadow-lg">
+    <h1 class="text-4xl md:text-5xl font-bold mb-2">Dominando la Documentación de APIs</h1>
+    <p class="text-lg md:text-xl text-blue-200">Una Guía Visual Profesional para Spring Boot con OpenAPI</p>
+    <p class="text-md text-white-600 mt-2">GlobalDesk | Ing. Cesar Fernandez</p>
+</header>
+
+<main class="container mx-auto p-4 md:p-8">
+
+    <section id="introduction" class="mb-12">
+        <div class="bg-white rounded-lg shadow-md p-8 text-center">
+            <h2 class="text-3xl font-bold brand-text-dark mb-4">¿Por Qué Documentar Microservicios?</h2>
+            <p class="text-lg max-w-3xl mx-auto mb-6">En un ecosistema de microservicios, la documentación de la API no
+                es un extra, es el contrato fundamental que permite la comunicación y la integración. Una documentación
+                clara y precisa acelera el desarrollo, reduce la fricción entre equipos y es la clave para un sistema
+                escalable y mantenible.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="brand-bg-extralight p-6 rounded-lg">
+                    <span class="text-4xl font-bold brand-text-dark">80%</span>
+                    <p class="mt-2 font-semibold">Reducción en tiempo de onboarding para nuevos desarrolladores.</p>
+                </div>
+                <div class="brand-bg-extralight p-6 rounded-lg">
+                    <span class="text-4xl font-bold brand-text-dark">✓</span>
+                    <p class="mt-2 font-semibold">Consistencia y Contratos Claros entre Servicios.</p>
+                </div>
+                <div class="brand-bg-extralight p-6 rounded-lg">
+                    <span class="text-4xl font-bold brand-text-dark">🚀</span>
+                    <p class="mt-2 font-semibold">Facilita la Adopción y el Consumo por parte de terceros.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="definitions" class="mb-12">
+        <h2 class="text-3xl font-bold brand-text-dark mb-6 text-center">El Ecosistema de Especificaciones</h2>
+        <p class="text-lg max-w-3xl mx-auto mb-8 text-center">Es crucial entender las herramientas y estándares. OpenAPI
+            define la estructura de tu API, mientras que Swagger proporciona las herramientas para interactuar con esa
+            definición. AsyncAPI cumple un rol similar para arquitecturas asíncronas.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-lg shadow-md p-6 border-t-4 brand-border-dark">
+                <h3 class="text-xl font-bold brand-text-dark mb-2">OpenAPI</h3>
+                <p class="font-semibold mb-2">La Especificación</p>
+                <p>Un estándar agnóstico al lenguaje para describir APIs REST. Es un formato legible por máquinas (y
+                    humanos) que detalla endpoints, operaciones, parámetros y modelos de datos.</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border-t-4 brand-border-medium">
+                <h3 class="text-xl font-bold brand-text-medium mb-2">Swagger</h3>
+                <p class="font-semibold mb-2">El Conjunto de Herramientas</p>
+                <p>Herramientas que implementan la especificación OpenAPI. Incluye Swagger UI (documentación
+                    interactiva), Swagger Editor (para diseñar APIs) y Swagger Codegen (para generar código).</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-gray-400">
+                <h3 class="text-xl font-bold text-gray-600 mb-2">AsyncAPI</h3>
+                <p class="font-semibold mb-2">Para Sistemas Asíncronos</p>
+                <p>Una especificación similar a OpenAPI, pero diseñada para APIs basadas en eventos y mensajería (ej.
+                    Kafka, RabbitMQ). Define canales, mensajes y operaciones de publicación/suscripción.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="workflow" class="mb-12 bg-white rounded-lg shadow-md p-8">
+        <h2 class="text-3xl font-bold brand-text-dark mb-2 text-center">Flujo de Trabajo de Documentación
+            Automatizada</h2>
+        <p class="text-lg max-w-3xl mx-auto mb-8 text-center">Con Springdoc, el proceso para generar documentación
+            interactiva y profesional se vuelve trivial. Se integra directamente con tu código Spring, generando la
+            especificación OpenAPI a partir de tus controladores y modelos existentes.</p>
+        <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+            <div class="flowchart-step brand-bg-extralight rounded-lg p-4 w-full md:w-1/4 shadow">
+                <div class="text-5xl font-bold brand-text-medium">1</div>
+                <h3 class="font-bold mt-2">Agregar Dependencia</h3>
+                <p class="text-sm"><code>springdoc-openapi-starter-webmvc-ui</code></p>
+            </div>
+            <div class="flowchart-arrow hidden md:block">→</div>
+            <div class="flowchart-arrow block md:hidden">↓</div>
+            <div class="flowchart-step brand-bg-extralight rounded-lg p-4 w-full md:w-1/4 shadow">
+                <div class="text-5xl font-bold brand-text-medium">2</div>
+                <h3 class="font-bold mt-2">Anotar el Código</h3>
+                <p class="text-sm">Usar <code>@Operation</code>, <code>@ApiResponse</code>, etc.</p>
+            </div>
+            <div class="flowchart-arrow hidden md:block">→</div>
+            <div class="flowchart-arrow block md:hidden">↓</div>
+            <div class="flowchart-step brand-bg-extralight rounded-lg p-4 w-full md:w-1/4 shadow">
+                <div class="text-5xl font-bold brand-text-medium">3</div>
+                <h3 class="font-bold mt-2">Arrancar la App</h3>
+                <p class="text-sm">Springdoc escanea y genera el schema.</p>
+            </div>
+            <div class="flowchart-arrow hidden md:block">→</div>
+            <div class="flowchart-arrow block md:hidden">↓</div>
+            <div class="flowchart-step bg-green-100 rounded-lg p-4 w-full md:w-1/4 shadow border-2 border-green-500">
+                <div class="text-5xl font-bold text-green-600">4</div>
+                <h3 class="font-bold mt-2 text-green-700">Explorar Swagger UI</h3>
+                <p class="text-sm text-green-700">Acceder a <code>/swagger-ui.html</code></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="annotations" class="mb-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-lg shadow-md p-8">
+                <h2 class="text-3xl font-bold brand-text-dark mb-6">Anotaciones Clave: El Lenguaje de la
+                    Documentación</h2>
+                <p class="mb-6">Estas anotaciones son las directivas que Springdoc utiliza para construir una
+                    documentación rica y detallada. Cada una enriquece una parte específica de la especificación
+                    OpenAPI, transformando tu código en una guía interactiva.</p>
+                <ul class="space-y-4">
+                    <li class="flex items-start"><span class="brand-text-medium font-bold text-xl mr-3">●</span>
+                        <div><code class="font-bold brand-text-dark">@Operation</code>: Describe un endpoint completo:
+                            qué hace, un resumen y una descripción detallada. Es el punto de partida.
+                        </div>
+                    </li>
+                    <li class="flex items-start"><span class="brand-text-medium font-bold text-xl mr-3">●</span>
+                        <div><code class="font-bold brand-text-dark">@ApiResponse</code>: Documenta las posibles
+                            respuestas de una operación (ej. 200 OK, 404 Not Found), incluyendo descripciones y el
+                            schema de la respuesta.
+                        </div>
+                    </li>
+                    <li class="flex items-start"><span class="brand-text-medium font-bold text-xl mr-3">●</span>
+                        <div><code class="font-bold brand-text-dark">@Schema</code>: Define la estructura de tus modelos
+                            de datos (DTOs). Especifica tipos de datos, validaciones (ej. not-null, tamaño) y ejemplos.
+                        </div>
+                    </li>
+                    <li class="flex items-start"><span class="brand-text-medium font-bold text-xl mr-3">●</span>
+                        <div><code class="font-bold brand-text-dark">@Parameter</code>: Describe los parámetros de una
+                            operación, como query params, path variables o headers, indicando si son requeridos y su
+                            formato.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold brand-text-dark mb-4 text-center">Foco de Esfuerzo en Documentación</h3>
+                <p class="text-center mb-4 text-sm">La distribución del esfuerzo al documentar típicamente se centra en
+                    definir claramente las operaciones y los modelos de datos, que forman el núcleo del contrato de la
+                    API.</p>
+                <div class="chart-container">
+                    <canvas id="annotationsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="schemas" class="mb-12 bg-white rounded-lg shadow-md p-8">
+        <h2 class="text-3xl font-bold brand-text-dark mb-2 text-center">Definiendo Contratos de Datos con @Schema</h2>
+        <p class="text-lg max-w-3xl mx-auto mb-8 text-center">La anotación <code>@Schema</code> es fundamental para
+            crear un contrato de datos robusto. Permite documentar cada campo de tus DTOs, incluyendo descripciones,
+            ejemplos y reglas de validación que se reflejarán directamente en la UI de Swagger.</p>
+        <div class="bg-gray-800 text-white rounded-lg p-6 font-mono text-sm shadow-inner overflow-x-auto">
+                <pre><code>
+<span class="text-purple-400">@Schema</span>(description = <span class="text-green-300">"DTO para la creación de un nuevo usuario."</span>)
+public class UserCreateDTO {
+
+    <span class="text-purple-400">@Schema</span>(description = <span
+                        class="text-green-300">"Nombre de usuario único."</span>, example = <span
+                        class="text-green-300">"john.doe"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
+    <span class="text-purple-400">@NotBlank</span>
+    <span class="text-purple-400">@Size</span>(min = 3, max = 50)
+    private String username;
+
+    <span class="text-purple-400">@Schema</span>(description = <span class="text-green-300">"Correo electrónico válido del usuario."</span>, example = <span
+                        class="text-green-300">"john.doe@example.com"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
+    <span class="text-purple-400">@Email</span>
+    private String email;
+}
+                </code></pre>
+        </div>
+    </section>
+
+</main>
+
+<footer class="text-center p-6 bg-gray-800 text-gray-300 text-sm">
+    <p>Documentación de la API | BFC - Creando aplicaciones con Java y Spring Boot</p>
+    <p class="text-md text-gray-600 mt-2">GlobalDesk | Ing. Cesar Fernandez</p>
+</footer>
+
+<script>
+    function wrapLabel(label) {
+        if (typeof label !== 'string' || label.length <= 16) {
+            return label;
+        }
+        const words = label.split(' ');
+        const lines = [];
+        let currentLine = '';
+        words.forEach(word => {
+            if ((currentLine + ' ' + word).length > 16 && currentLine.length > 0) {
+                lines.push(currentLine);
+                currentLine = word;
+            } else {
+                currentLine = currentLine ? currentLine + ' ' + word : word;
+            }
+        });
+        lines.push(currentLine);
+        return lines;
+    }
+
+    const ctx = document.getElementById('annotationsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['@Operation & @ApiResponse', '@Schema (Modelos de Datos)', '@Parameter (Params/Headers)', 'Configuración Global'].map(wrapLabel),
+            datasets: [{
+                label: 'Nivel de Esfuerzo/Importancia',
+                data: [40, 35, 20, 5],
+                backgroundColor: [
+                    '#004AAD',
+                    '#0073E6',
+                    '#66B2FF',
+                    '#CCE5FF'
+                ],
+                borderColor: [
+                    '#004AAD',
+                    '#0073E6',
+                    '#66B2FF',
+                    '#CCE5FF'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Porcentaje de Esfuerzo (%)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function (tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
