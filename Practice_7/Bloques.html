@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Arquitectura de Microservicios</title>
+    <!-- 1. Importar Tailwind CSS para estilos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Estilos para el modo oscuro por defecto */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+
+        /* Contenedor principal del diagrama */
+        .arch-container {
+            width: 100%;
+            max-width: 64rem; /* max-w-6xl */
+            margin: 2rem auto; /* my-8 mx-auto */
+            padding: 2.5rem 1.5rem; /* p-10 p-6 */
+            background-color: #1f2937; /* bg-gray-800 */
+            border: 1px solid #374151; /* border-gray-700 */
+            border-radius: 0.75rem; /* rounded-xl */
+            position: relative; /* Para posicionar las líneas */
+            min-height: 700px;
+        }
+
+        /* Caja genérica para un componente de arquitectura */
+        .arch-box {
+            border: 2px solid;
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1.5rem; /* p-6 */
+            text-align: center;
+            font-weight: 600;
+            position: absolute; /* Posicionamiento manual para claridad */
+            background-color: #374151; /* bg-gray-700 */
+            z-index: 10;
+        }
+
+        /* Tipos de Cajas */
+        .actor {
+            border-color: #06b6d4; /* border-cyan-500 */
+            color: #06b6d4; /* text-cyan-500 */
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+        }
+
+        .gateway {
+            border-color: #a78bfa; /* border-violet-400 */
+            color: #a78bfa; /* text-violet-400 */
+            top: 10rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+        }
+
+        .service {
+            border-color: #6ee7b7; /* border-emerald-300 */
+            color: #6ee7b7; /* text-emerald-300 */
+            width: 28%;
+            top: 22rem;
+        }
+
+        .db {
+            border-color: #fca5a5; /* border-red-300 */
+            color: #fca5a5; /* text-red-300 */
+            width: 28%;
+            top: 32rem;
+            /* Simulación de cilindro */
+            border-radius: 0.5rem 0.5rem 50% 50% / 0.5rem 0.5rem 20% 20%;
+        }
+
+        /* Posicionamiento de servicios y DBs */
+        .s1 {
+            left: 4%;
+        }
+
+        /* Columna 1 */
+        .s2 {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Columna 2 (central) */
+        .s3 {
+            right: 4%;
+        }
+
+        /* Columna 3 */
+
+        /* Línea de conexión genérica */
+        .line {
+            position: absolute;
+            background-color: #4b5563; /* bg-gray-600 */
+            z-index: 5;
+        }
+
+        /* Líneas Verticales */
+        .line-v {
+            width: 2px;
+            left: 50%;
+            margin-left: -1px;
+        }
+
+        /* Líneas Horizontales */
+        .line-h {
+            height: 2px;
+            top: 19rem; /* Nivel de conexión de servicios */
+            left: 18%; /* Desde el servicio 1 */
+            width: 64%; /* Hasta el servicio 3 */
+        }
+
+        /* Conectores específicos */
+        #c-g {
+            top: 7.5rem;
+            height: 2.5rem;
+        }
+
+        /* Cliente -> Gateway */
+        #g-svcs {
+            top: 15.5rem;
+            height: 3.5rem;
+        }
+
+        /* Gateway -> Bus Horizontal */
+
+        /* Conectores de Servicios al Bus */
+        #s1-bus {
+            top: 19rem;
+            height: 3rem;
+            left: 18%;
+        }
+
+        /* Servicio Clientes */
+        #s2-bus {
+            top: 19rem;
+            height: 3rem;
+            left: 50%;
+        }
+
+        /* Servicio Pedidos */
+        #s3-bus {
+            top: 19rem;
+            height: 3rem;
+            left: 82%;
+        }
+
+        /* Servicio Productos */
+
+        /* Conectores de Servicio a DB */
+        #s1-db {
+            top: 28.5rem;
+            height: 3.5rem;
+            left: 18%;
+        }
+
+        #s2-db {
+            top: 28.5rem;
+            height: 3.5rem;
+            left: 50%;
+        }
+
+        #s3-db {
+            top: 28.5rem;
+            height: 3.5rem;
+            left: 82%;
+        }
+
+        /* Flechas */
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            z-index: 6;
+        }
+
+        .arrow-down {
+            border-top: 10px solid #4b5563;
+        }
+
+        .arrow-up {
+            border-bottom: 10px solid #4b5563;
+        }
+
+        /* Posición de flechas */
+        #a-c-g {
+            top: 9.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Cliente -> Gateway */
+        #a-g-svcs {
+            top: 18.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Gateway -> Bus */
+
+        /* Flechas de Comunicación (Pedidos -> Clientes/Productos) */
+        .comm-arrow {
+            top: 25.5rem; /* A mitad de camino del servicio */
+            border-top: 10px solid #a78bfa; /* Flecha violeta */
+            z-index: 11;
+        }
+
+        #a-p-c {
+            left: 40%;
+            transform: translateX(-50%) rotate(-90deg);
+        }
+
+        /* Pedidos -> Clientes */
+        #a-p-p {
+            left: 60%;
+            transform: translateX(-50%) rotate(90deg);
+        }
+
+        /* Pedidos -> Productos */
+
+        /* Flechas de DB */
+        #a-s1-db {
+            top: 31.5rem;
+            left: 18%;
+            transform: translateX(-50%);
+        }
+
+        #a-s2-db {
+            top: 31.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #a-s3-db {
+            top: 31.5rem;
+            left: 82%;
+            transform: translateX(-50%);
+        }
+
+    </style>
+    <!-- Soporte para la fuente Inter (opcional pero recomendado) -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 md:p-10">
+
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold mb-2 text-cyan-400">Diagrama de Arquitectura de Microservicios</h1>
+
+    <!-- Sección de Explicación de Patrones -->
+    <div class="grid md:grid-cols-2 gap-4 mb-8">
+        <div class="bg-gray-800 p-4 rounded-lg shadow">
+            <h3 class="font-semibold text-lg text-violet-400 mb-2">1. Patrón: API Gateway</h3>
+            <p class="text-gray-300 text-sm">
+                El <strong class="text-violet-300">API Gateway</strong> actúa como un punto de entrada único para todas
+                las solicitudes del cliente.
+                Simplifica la comunicación, maneja la autenticación y enruta las solicitudes al microservicio correcto.
+                El cliente no necesita saber dónde vive cada servicio.
+            </p>
+        </div>
+        <div class="bg-gray-800 p-4 rounded-lg shadow">
+            <h3 class="font-semibold text-lg text-red-300 mb-2">2. Patrón: Database per Service</h3>
+            <p class="text-gray-300 text-sm">
+                Cada microservicio (Pedidos, Clientes, Productos) es <strong>dueño exclusivo de su propia base de
+                datos</strong>.
+                Ningún otro servicio puede acceder directamente a la base de datos de otro. La comunicación *debe*
+                hacerse a través de la API del servicio. Esto garantiza un bajo acoplamiento.
+            </p>
+        </div>
+    </div>
+
+    <!-- Contenedor del Diagrama de Arquitectura -->
+    <div class="arch-container">
+
+        <!-- Nivel 1: Actor Externo -->
+        <div class="arch-box actor">Cliente (Web/Móvil)</div>
+        <div class="line line-v" id="c-g"></div>
+        <div class="arrow arrow-down" id="a-c-g"></div>
+
+        <!-- Nivel 2: API Gateway -->
+        <div class="arch-box gateway">API Gateway</div>
+        <div class="line line-v" id="g-svcs"></div>
+        <div class="arrow arrow-down" id="a-g-svcs"></div>
+
+        <!-- Bus de Comunicación (Línea Horizontal) -->
+        <div class="line line-h"></div>
+
+        <!-- Conectores al Bus -->
+        <div class="line line-v" id="s1-bus"></div>
+        <div class="line line-v" id="s2-bus"></div>
+        <div class="line line-v" id="s3-bus"></div>
+
+        <!-- Nivel 3: Microservicios -->
+        <div class="arch-box service s1">Servicio de Clientes</div>
+        <div class="arch-box service s2">Servicio de Pedidos</div>
+        <div class="arch-box service s3">Servicio de Productos</div>
+
+        <!-- Flechas de Comunicación (Pedidos -> otros) -->
+        <div class="arrow comm-arrow" id="a-p-c"></div> <!-- Pedidos a Clientes -->
+        <div class="arrow comm-arrow" id="a-p-p"></div> <!-- Pedidos a Productos -->
+
+        <!-- Conectores a Bases de Datos -->
+        <div class="line line-v" id="s1-db"></div>
+        <div class="arrow arrow-down" id="a-s1-db"></div>
+
+        <div class="line line-v" id="s2-db"></div>
+        <div class="arrow arrow-down" id="a-s2-db"></div>
+
+        <div class="line line-v" id="s3-db"></div>
+        <div class="arrow arrow-down" id="a-s3-db"></div>
+
+        <!-- Nivel 4: Bases de Datos -->
+        <div class="arch-box db s1">db_clientes</div>
+        <div class="arch-box db s2">db_pedidos</div>
+        <div class="arch-box db s3">db_productos</div>
+
+    </div>
+</div>
+
+</body>
+</html>

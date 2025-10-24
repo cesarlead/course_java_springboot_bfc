@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Secuencia de Pedidos</title>
+    <!-- 1. Importar Tailwind CSS para estilos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Estilos para el modo oscuro por defecto */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+
+        /* Contenedor principal del diagrama "hecho a mano" */
+        .flow-container {
+            width: 100%;
+            max-width: 56rem; /* max-w-3xl */
+            margin: 1.5rem auto; /* my-6 mx-auto */
+            padding: 1.5rem; /* p-6 */
+            background-color: #1f2937; /* bg-gray-800 */
+            border: 1px solid #374151; /* border-gray-700 */
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow-x: auto; /* Para pantallas pequeñas */
+        }
+
+        /* Encabezados de los participantes (columnas) */
+        .participant-headers {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            min-width: 500px; /* Ancho mínimo para legibilidad */
+        }
+
+        .participant-headers div {
+            text-align: center;
+            font-weight: 600;
+            color: #e5e7eb; /* text-gray-200 */
+            background-color: #374151; /* bg-gray-700 */
+            padding: 0.5rem;
+            border-radius: 0.375rem; /* rounded-md */
+        }
+
+        /* Cada paso/bloque del flujo */
+        .flow-step {
+            margin-bottom: 1rem;
+            position: relative;
+            min-height: 40px;
+            display: flex; /* Usamos flex para alinear el mensaje */
+            align-items: center;
+            min-width: 500px; /* Ancho mínimo para legibilidad */
+        }
+
+        /* El bloque del mensaje */
+        .message {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem; /* rounded-md */
+            background-color: #111827; /* bg-gray-900 */
+            border: 1px solid #4b5563; /* border-gray-600 */
+            position: relative; /* Para que esté sobre la línea */
+            font-size: 0.875rem; /* text-sm */
+            z-index: 10; /* Se sienta ENCIMA de la línea de flujo */
+        }
+
+        /* El texto dentro del bloque de mensaje */
+        .message span {
+            display: block;
+            font-family: 'Consolas', 'Menlo', monospace;
+            color: #6ee7b7; /* text-emerald-300 */
+        }
+
+        /* --- NUEVO: La Línea de Flujo Separada --- */
+        .arrow-line {
+            position: absolute;
+            top: 50%;
+            height: 2px;
+            background-color: #4b5563; /* Color de la línea */
+            z-index: 5; /* Se sienta DETRÁS del mensaje */
+        }
+
+        /* --- NUEVO: La Punta de Flecha (Derecha) --- */
+        .arrow-line::after {
+            content: '';
+            position: absolute;
+            top: -5px; /* Centra la flecha de 12px en la línea de 2px */
+            right: -2px; /* Ligeramente sobre el final */
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 10px solid #4b5563; /* La punta de flecha */
+        }
+
+        /* --- NUEVO: La Punta de Flecha (Izquierda, para respuestas) --- */
+        .arrow-line.reverse::after {
+            border-left: none;
+            right: auto;
+            left: -2px;
+            border-right: 10px solid #6b7280; /* Color de respuesta */
+        }
+
+        /* Estilos de respuesta (línea discontinua) */
+        .response .message {
+            border-style: dashed;
+            border-color: #6b7280; /* border-gray-500 */
+        }
+
+        .response .arrow-line {
+            /* Crea una línea discontinua con gradiente */
+            background-image: linear-gradient(to right, #6b7280 50%, transparent 50%);
+            background-size: 10px 2px;
+            background-color: transparent; /* Quitar el fondo sólido */
+        }
+
+        /* --- Posicionamiento Basado en Columnas --- */
+        /* Cada columna (4) tiene 25% de ancho. Los centros están en 12.5%, 37.5%, 62.5%, 87.5% */
+
+        /* De Col 1 a Col 2 */
+        .c1-to-c2 .message {
+            margin-left: 5%;
+        }
+
+        /* Posición del texto */
+        .c1-to-c2 .arrow-line {
+            left: 12.5%;
+            width: 25%;
+        }
+
+        /* Línea de C1-center a C2-center */
+
+        /* De Col 2 a Col 3 */
+        .c2-to-c3 .message {
+            margin-left: 30%;
+        }
+
+        .c2-to-c3 .arrow-line {
+            left: 37.5%;
+            width: 25%;
+        }
+
+        /* Línea de C2-center a C3-center */
+
+        /* De Col 3 a Col 2 (Respuesta) */
+        .c3-to-c2 .message {
+            margin-left: 30%;
+        }
+
+        .c3-to-c2 .arrow-line {
+            left: 37.5%;
+            width: 25%;
+        }
+
+        /* Misma línea, flecha invertida */
+
+        /* De Col 2 a Col 4 */
+        .c2-to-c4 .message {
+            margin-left: 30%;
+        }
+
+        .c2-to-c4 .arrow-line {
+            left: 37.5%;
+            width: 50%;
+        }
+
+        /* Línea de C2-center a C4-center */
+
+        /* De Col 4 a Col 2 (Respuesta) */
+        .c4-to-c2 .message {
+            margin-left: 30%;
+        }
+
+        .c4-to-c2 .arrow-line {
+            left: 37.5%;
+            width: 50%;
+        }
+
+        /* De Col 2 a Col 1 (Respuesta) */
+        .c2-to-c1 .message {
+            margin-left: 5%;
+        }
+
+        .c2-to-c1 .arrow-line {
+            left: 12.5%;
+            width: 25%;
+        }
+
+        /* Bloques de Nota y Lógica Interna (Sin línea de flujo) */
+        .internal span {
+            color: #f3f4f6;
+        }
+
+        .internal {
+            margin-left: 30%;
+            width: 15%;
+            background-color: #374151;
+        }
+
+        /* Centrado en Col 2 */
+
+        .note span {
+            color: #d1d5db;
+            font-style: italic;
+        }
+
+        .note {
+            margin-left: 55%;
+            width: 40%;
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+
+        /* Entre Col 3 y 4 */
+
+        /* Estilos para los bloques 'alt' y 'else' de la Saga (sin cambios) */
+        .alt-block {
+            border: 2px solid #3b82f6; /* border-blue-500 */
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem 1.5rem 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .alt-block legend {
+            padding: 0 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #3b82f6; /* text-blue-500 */
+        }
+
+        .else-block {
+            border-color: #ef4444; /* border-red-500 */
+            margin-top: 1.5rem;
+            background-color: rgba(153, 27, 27, 0.1);
+        }
+
+        .else-block legend {
+            color: #ef4444; /* text-red-500 */
+        }
+
+    </style>
+    <!-- Soporte para la fuente Inter (opcional pero recomendado) -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 md:p-10">
+
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-cyan-400">Flujo de Pedidos</h1>
+
+    <!-- Sección 1: Diagrama Original del Usuario -->
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-white">1. Diagrama Original: Creación de Pedido</h2>
+
+
+        <!-- Contenedor del diagrama "hecho a mano" -->
+        <div class="flow-container">
+            <!-- Encabezados -->
+            <div class="participant-headers">
+                <div>Cliente</div>
+                <div>Pedidos</div>
+                <div>Clientes</div>
+                <div>Productos</div>
+            </div>
+
+            <!-- Flujo de mensajes: AHORA CON .arrow-line SEPARADO -->
+            <div class="flow-step c1-to-c2">
+                <div class="message"><span>1. POST /api/v1/orders</span></div>
+                <div class="arrow-line"></div>
+            </div>
+            <div class="flow-step c2-to-c3">
+                <div class="message"><span>2. GET /api/v1/customers/{id}</span></div>
+                <div class="arrow-line"></div>
+            </div>
+            <div class="flow-step response c3-to-c2">
+                <div class="message"><span>3. 200 OK (CustomerDTO)</span></div>
+                <div class="arrow-line reverse"></div>
+            </div>
+            <div class="flow-step c2-to-c4">
+                <div class="message"><span>4. GET /api/v1/products/{id} (Prod 1)</span></div>
+                <div class="arrow-line"></div>
+            </div>
+            <div class="flow-step response c4-to-c2">
+                <div class="message"><span>5. 200 OK (ProductDTO)</span></div>
+                <div class="arrow-line reverse"></div>
+            </div>
+            <div class="flow-step c2-to-c4">
+                <div class="message"><span>6. GET /api/v1/products/{id} (Prod 2)</span></div>
+                <div class="arrow-line"></div>
+            </div>
+            <div class="flow-step response c4-to-c2">
+                <div class="message"><span>7. 200 OK (ProductDTO)</span></div>
+                <div class="arrow-line reverse"></div>
+            </div>
+            <!-- Bloques de Nota/Interno (no tienen línea de flujo) -->
+            <div class="flow-step">
+                <div class="message note"><span>Validación interna: ¿Stock?</span></div>
+            </div>
+            <div class="flow-step">
+                <div class="message note"><span>Cálculo del total</span></div>
+            </div>
+            <div class="flow-step">
+                <div class="message internal"><span>8. Guardar Order (Transacción Local)</span></div>
+            </div>
+
+            <div class="flow-step c2-to-c4">
+                <div class="message"><span>9. POST /decrement-stock (Prod 1)</span></div>
+                <div class="arrow-line"></div>
+            </div>
+            <div class="flow-step response c4-to-c2">
+                <div class="message"><span>10. 200 OK</span></div>
+                <div class="arrow-line reverse"></div>
+            </div>
+            <div class="flow-step c2-to-c4">
+                <div class="message"><span>11. POST /decrement-stock (Prod 2)</span></div>
+                <div class="arrow-line"></div>
+            </div>
+            <div class="flow-step response c4-to-c2">
+                <div class="message"><span>12. 200 OK</span></div>
+                <div class="arrow-line reverse"></div>
+            </div>
+            <div class="flow-step response c2-to-c1">
+                <div class="message"><span>13. 201 CREATED</span></div>
+                <div class="arrow-line reverse"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección 2: Propuesta de Mejora (Patrón Saga) -->
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-semibold mb-4 text-white">2. Propuesta de Mejora: Patrón Saga (Orquestación)</h2>
+        <p class="mb-4 text-gray-300">
+            Esta es la implementación robusta usando el <strong class="text-cyan-400">Patrón Saga de
+            Orquestación</strong>, Si algo falla, ejecuta las "transacciones de compensación" para
+            revertir la operación.
+        </p>
+
+        <!-- Contenedor del diagrama "hecho a mano" de la Saga -->
+        <div class="flow-container">
+            <!-- Encabezados -->
+            <div class="participant-headers">
+                <div>Cliente</div>
+                <div>Pedidos (Orquestador)</div>
+                <div>Clientes</div>
+                <div>Productos</div>
+            </div>
+
+            <!-- Flujo de mensajes -->
+            <div class="flow-step c1-to-c2">
+                <div class="message"><span>1. POST /api/v1/orders (Inicia Saga)</span></div>
+                <div class="arrow-line"></div>
+            </div>
+            <div class="flow-step">
+                <div class="message internal"><span>2. CREAR SAGA (Estado: PENDIENTE)</span></div>
+            </div>
+            <div class="flow-step c2-to-c3">
+                <div class="message"><span>3. GET /.../customers/{id} (Validar Cliente)</span></div>
+                <div class="arrow-line"></div>
+            </div>
+            <div class="flow-step response c3-to-c2">
+                <div class="message"><span>4. 200 OK (Cliente validado)</span></div>
+                <div class="arrow-line reverse"></div>
+            </div>
+            <div class="flow-step c2-to-c4">
+                <div class="message"><span>5. POST /.../reserve-stock (Prod 1 y 2)</span></div>
+                <div class="arrow-line"></div>
+            </div>
+            <div class="flow-step response c4-to-c2">
+                <div class="message"><span>6. 200 OK (Stock reservado)</span></div>
+                <div class="arrow-line reverse"></div>
+            </div>
+
+            <!-- Bloque ALT: Transacción Exitosa -->
+            <fieldset class="alt-block">
+                <legend>alt: Transacción Exitosa (Todo OK)</legend>
+                <div class="flow-step">
+                    <div class="message internal"><span>7. CONFIRMAR SAGA (Estado: COMPLETADA)</span></div>
+                </div>
+                <div class="flow-step c2-to-c3">
+                    <div class="message"><span>8. POST /.../confirm-charge</span></div>
+                    <div class="arrow-line"></div>
+                </div>
+                <div class="flow-step response c3-to-c2">
+                    <div class="message"><span>9. 200 OK</span></div>
+                    <div class="arrow-line reverse"></div>
+                </div>
+                <div class="flow-step c2-to-c4">
+                    <div class="message"><span>10. POST /.../confirm-stock-decrement</span></div>
+                    <div class="arrow-line"></div>
+                </div>
+                <div class="flow-step response c4-to-c2">
+                    <div class="message"><span>11. 200 OK</span></div>
+                    <div class="arrow-line reverse"></div>
+                </div>
+                <div class="flow-step response c2-to-c1">
+                    <div class="message"><span>12. 201 CREATED</span></div>
+                    <div class="arrow-line reverse"></div>
+                </div>
+            </fieldset>
+
+            <!-- Bloque ELSE: Fallo -->
+            <fieldset class="alt-block else-block">
+                <legend>else: Fallo en algún paso</legend>
+                <div class="flow-step">
+                    <div class="message internal"><span>7. REVERTIR SAGA (Estado: FALLIDA)</span></div>
+                </div>
+                <div class="flow-step">
+                    <div class="message note"><span>Iniciando compensaciones...</span></div>
+                </div>
+                <div class="flow-step c2-to-c3">
+                    <div class="message"><span>8. POST /.../release-credit</span></div>
+                    <div class="arrow-line"></div>
+                </div>
+                <div class="flow-step response c3-to-c2">
+                    <div class="message"><span>9. 200 OK (Compensación OK)</span></div>
+                    <div class="arrow-line reverse"></div>
+                </div>
+                <div class="flow-step c2-to-c4">
+                    <div class="message"><span>10. POST /.../release-stock-reservation</span></div>
+                    <div class="arrow-line"></div>
+                </div>
+                <div class="flow-step response c4-to-c2">
+                    <div class="message"><span>11. 200 OK (Compensación OK)</span></div>
+                    <div class="arrow-line reverse"></div>
+                </div>
+                <div class="flow-step response c2-to-c1">
+                    <div class="message"><span>12. 500 Internal Server Error</span></div>
+                    <div class="arrow-line reverse"></div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
