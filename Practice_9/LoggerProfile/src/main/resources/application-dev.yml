@@ -1,0 +1,31 @@
+server:
+  port: 8083
+
+# --- Perfil DEV ---
+# Usamos H2 en memoria para desarrollo rápido
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      # create-drop: crea la BBDD al iniciar y la borra al apagar. Perfecto para dev.
+      ddl-auto: create-drop
+
+# Nivel de log para nuestro paquete en DEV: DEBUG
+logging:
+  level:
+    com.cesarlead.loggerprofile: DEBUG # Nombre de tu paquete
+
+# --- Configuración de App (para dev) ---
+app:
+  config:
+    api-key: "dev-key-123-sandbox"
+    email-mock: true

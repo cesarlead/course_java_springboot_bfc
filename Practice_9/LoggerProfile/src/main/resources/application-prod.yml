@@ -1,0 +1,39 @@
+server:
+  port: 8082 # 80 Puerto estándar en producción
+
+# --- Perfil PROD ---
+# Apuntamos a una BBDD PostgreSQL real
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: mi_usuario_pro
+    password: mi_clave_secreta_segura
+    driverClassName: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      # validate: JAMÁS crear o borrar tablas en prod. Solo validar que el esquema coincide.
+      ddl-auto: validate
+
+  # Deshabilitar la consola H2 en prod
+  h2:
+    console:
+      enabled: false
+
+# --- Configuración de App (para prod) ---
+app:
+  config:
+    # Asignamos la API key directamente en el YML para la demo
+    api-key: prod-key-987-LIVE-FROM-YML
+    email-mock: false
+
+# Nivel de log para nuestro paquete en PROD: INFO
+logging:
+  level:
+    com.cesarlead.loggerprofile: INFO # Nombre de tu paquete
+    org.springframework: WARN
+    org.hibernate: WARN
+
+  # Propiedad para logback-spring.xml (le cambiamos el nombre para que sea más claro)
+  file:
+    name: ./logs/prod-app.log # Ruta relativa donde se guardará el log

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: logger-profile
+
+  # Perfil activo por defecto.
+  # Esto será sobreescrito en QA/PROD por una variable de entorno o -Dspring.profiles.active=prod
+  profiles:
+    active: prod # Dejamos 'dev' como default para desarrollo
+
+# Configuración de JPA compartida
+jpa:
+  hibernate:
+    naming:
+      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  properties:
+    hibernate:
+      show_sql: true
+      format_sql: true

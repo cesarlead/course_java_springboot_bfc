@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty scope="context" name="LOG_FILE" source="logging.file.name" defaultValue="./logs/default.log"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+
+        <logger name="com.cesarlead.loggerprofile" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_FILE}</file> <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+                <maxFileSize>10MB</maxFileSize>
+                <maxHistory>7</maxHistory>
+                <totalSizeCap>100MB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
+        <appender name="JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_FILE}.json</file>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}.json.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+                <maxFileSize>10MB</maxFileSize>
+                <maxHistory>7</maxHistory>
+                <totalSizeCap>100MB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="JSON"/>
+        </root>
+
+        <logger name="com.cesarlead.loggerprofile" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="JSON"/>
+        </logger>
+    </springProfile>
+
+</configuration>

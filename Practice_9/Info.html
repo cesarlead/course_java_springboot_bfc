@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Spring Boot Config & Logging</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Reset y Estilos Globales --- */
+        :root {
+            --color-spring-green: #6DB33F;
+            --color-blue-dev: #007BFF;
+            --color-green-prod: #28a745;
+            --color-red-bad: #dc3545;
+            --color-text-dark: #333;
+            --color-text-light: #555;
+            --color-bg-light: #f4f7f6;
+            --color-bg-white: #ffffff;
+            --color-code-bg: #2d2d2d;
+            --border-radius-sm: 8px;
+            --border-radius-lg: 12px;
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--color-bg-light);
+            color: var(--color-text-dark);
+            line-height: 1.6;
+        }
+
+        /* --- Encabezado --- */
+        header {
+            background: linear-gradient(135deg, var(--color-spring-green) 0%, #5a9d32 100%);
+            color: var(--color-bg-white);
+            padding: 2.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        header .subtitle {
+            font-size: 1.25rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* --- Contenedor Principal de la Infografía --- */
+        .infographic-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* --- Estilo de Tarjeta (Bloque) --- */
+        .card {
+            background: var(--color-bg-white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-light);
+            padding: 1.5rem 2rem;
+            border-top: 5px solid var(--color-spring-green);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--color-text-dark);
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- Contenedor de Columnas (para DEV/PROD y Mal/Bien) --- */
+        .columns-container {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .column {
+            flex: 1;
+            padding: 1.5rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .column ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .column li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 0.75rem;
+        }
+
+        .column li::before {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: 600;
+        }
+
+        /* --- Bloque 1: El Reto (DEV vs PROD) --- */
+        .dev-col {
+            background-color: #f0f7ff;
+            border: 2px solid var(--color-blue-dev);
+        }
+
+        .dev-col h3 {
+            color: var(--color-blue-dev);
+        }
+
+        .dev-col li::before {
+            content: '🚀';
+        }
+
+        .prod-col {
+            background-color: #f6fff5;
+            border: 2px solid var(--color-green-prod);
+        }
+
+        .prod-col h3 {
+            color: var(--color-green-prod);
+        }
+
+        .prod-col li::before {
+            content: '🛡️';
+        }
+
+        .key-phrase {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: var(--border-radius-sm);
+        }
+
+        /* --- Bloque 2: Perfiles de Spring --- */
+        .profile-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .flow-box {
+            background: #f0f4f8;
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            border: 2px dashed #a0bcca;
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--color-text-light);
+        }
+
+        .profile-code {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .profile-code .column {
+            background: #f9f9f9;
+        }
+
+        /* --- Bloque 3: Logging (Mal vs Bien) --- */
+        .bad-practice {
+            background: #fff5f5;
+            border: 2px solid var(--color-red-bad);
+        }
+
+        .bad-practice h3 {
+            color: var(--color-red-bad);
+        }
+
+        .good-practice {
+            background: #f6fff5;
+            border: 2px solid var(--color-green-prod);
+        }
+
+        .good-practice h3 {
+            color: var(--color-green-prod);
+        }
+
+        .why {
+            font-weight: 600;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: var(--border-radius-sm);
+            display: block;
+        }
+
+        .why-bad {
+            background: #ffebeb;
+            color: #c51a1a;
+        }
+
+        .why-good {
+            background: #e6ffeb;
+            color: #1e7e34;
+        }
+
+        /* --- Bloque 4: Nivel PRO (Logback) --- */
+        .logback-flow {
+            text-align: center;
+        }
+
+        .flow-step, .appender-box {
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            margin: 0 auto;
+        }
+
+        .flow-step {
+            background: #e0f7fa;
+            border: 2px solid #007BFF;
+            max-width: 400px;
+        }
+
+        .arrow-down {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-text-light);
+            margin: 0.5rem 0;
+        }
+
+        .appenders-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .appender-box {
+            flex: 1;
+            background: #f9f9f9;
+            border: 2px dashed #888;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .appender-box .icon {
+            font-size: 2rem;
+        }
+
+        .appender-box span {
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+        }
+
+        /* --- Bloque 5: Puntos Clave --- */
+        .summary-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .summary-card li {
+            font-size: 1.1rem;
+            font-weight: 600;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 1rem;
+        }
+
+        .summary-card li::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            top: -2px;
+            font-size: 1.5rem;
+        }
+
+        /* --- Estilos para fragmentos de código --- */
+        pre {
+            background: var(--color-code-bg);
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            overflow-x: auto;
+            margin-top: 0.5rem;
+        }
+
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* --- Media Query para Responsividad --- */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .columns-container, .profile-flow, .appenders-container {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Configuración y Logging</h1>
+    <p class="subtitle">De <code>System.out.println</code> a Logs JSON listos para Producción en Spring Boot</p>
+</header>
+
+<main class="infographic-container">
+
+    <section class="card" id="reto">
+        <h2>El Reto: ¿Por Qué Configurar?</h2>
+        <div class="columns-container">
+            <div class="column dev-col">
+                <h3>🚀 Lado DEV (Desarrollo)</h3>
+                <ul>
+                    <li><strong>Objetivo:</strong> Velocidad</li>
+                    <li><strong>BBDD:</strong> En Memoria (H2)</li>
+                    <li><strong>Esquema:</strong> <code>create-drop</code> (Auto-crear)</li>
+                    <li><strong>Logs:</strong> <code>DEBUG</code> (Ruidoso)</li>
+                    <li><strong>Servicios:</strong> "Mock" (Simulados)</li>
+                </ul>
+            </div>
+            <div class="column prod-col">
+                <h3>🛡️ Lado PROD (Producción)</h3>
+                <ul>
+                    <li><strong>Objetivo:</strong> Estabilidad</li>
+                    <li><strong>BBDD:</strong> Real (PostgreSQL)</li>
+                    <li><strong>Esquema:</strong> <code>validate</code> (¡Nunca borrar!)</li>
+                    <li><strong>Logs:</strong> <code>INFO</code> (Conciso)</li>
+                    <li><strong>Servicios:</strong> Reales (Con API Keys)</li>
+                </ul>
+            </div>
+        </div>
+        <p class="key-phrase">Gestionamos ambos mundos con <strong>un solo código</strong> usando Perfiles.</p>
+    </section>
+
+    <section class="card" id="perfiles">
+        <h2>Solución 1: Spring Profiles</h2>
+        <p>Spring fusiona la configuración basado en el perfil activo. Las propiedades de perfil sobrescriben la
+            base.</p>
+
+        <div class="profile-flow">
+            <div class="flow-box"><strong>application.yml</strong><br>(Base Común)</div>
+            <div class="flow-arrow">+</div>
+            <div class="flow-box"><strong>application-dev.yml</strong><br>(Perfil Activo)</div>
+            <div class="flow-arrow">=</div>
+            <div class="flow-box" style="background: #e6ffeb; border-color: var(--color-green-prod);"><strong>Configuración
+                Final</strong><br>(Fusionada)
+            </div>
+        </div>
+
+        <p>Y podemos activar/desactivar Beans (componentes) enteros:</p>
+
+        <div class="columns-container profile-code">
+            <div class="column">
+                <h4>Servicio Mock (Simulado)</h4>
+                <pre><code>@Service
+@Profile("dev")
+public class MockEmailService { ... }</code></pre>
+                <span>Se activa SÓLO en DEV.</span>
+            </div>
+            <div class="column">
+                <h4>Servicio Real (Producción)</h4>
+                <pre><code>@Service
+@Profile("!dev")
+public class RealEmailService { ... }</code></pre>
+                <span>Se activa si el perfil NO es DEV.</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="card" id="logging">
+        <h2>Solución 2: El Logging Correcto</h2>
+        <div class="columns-container">
+
+            <div class="column bad-practice">
+                <h3>❌ LA MALA PRÁCTICA</h3>
+
+                <h4>1. Concatenación de Strings</h4>
+                <pre><code>// ¡MAL! Costoso e ilegible
+logger.debug("MALA: " + transactionId);</code></pre>
+                <span class="why why-bad">La operación (<code>+</code>) se ejecuta <strong>SIEMPRE</strong>, aunque <code>DEBUG</code> esté deshabilitado. ¡Desperdicias CPU!</span>
+
+                <h4 style="margin-top: 1rem;">2. System.out.println</h4>
+                <pre><code>// ¡PEOR! Lento y no gestionable
+System.out.println("Transacción " + txId);</code></pre>
+                <span class="why why-bad">Es bloqueante (I/O) y no puedes controlar niveles, archivos o formato. <strong>¡PROHIBIDO!</strong></span>
+            </div>
+
+            <div class="column good-practice">
+                <h3>✅ LA BUENA PRÁCTICA</h3>
+
+                <h4>1. Anotación @Slf4j</h4>
+                <pre><code>// ¡LIMPIO! Inyecta 'log'
+@Slf4j
+public class UserService { ... }</code></pre>
+                <span class="why why-good">Añade <code>log</code> por ti, sin errores y siguiendo el principio DRY (Don't Repeat Yourself).</span>
+
+                <h4 style="margin-top: 1rem;">2. Placeholders (<code>{}</code>)</h4>
+                <pre><code>// ¡EFICIENTE!
+log.debug("BUENA: Tx {} User {}", txId, user);</code></pre>
+                <span class="why why-good">El String SÓLO se formatea si <code>DEBUG</code> está activo. El costo es CERO si está deshabilitado.</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="card" id="logback">
+        <h2>Nivel PRO: `logback-spring.xml` (Observabilidad)</h2>
+        <p>En Producción, la consola no es suficiente. Configuramos "Appenders" (destinos) para tener control total.</p>
+
+        <div class="logback-flow">
+            <div class="flow-step">
+                <strong>Código:</strong> <code>log.info("Usuario creado: {}")</code>
+            </div>
+            <div class="arrow-down">⬇</div>
+            <div class="flow-step" style="background: #fffbe6; border-color: #ffc107;">
+                <strong>Logback (Perfil `prod` activado)</strong>
+            </div>
+            <div class="arrow-down">⬇</div>
+            <p>El log se envía a <strong>TRES</strong> destinos a la vez:</p>
+
+            <div class="appenders-container">
+                <div class="appender-box">
+                    <div class="icon">🖥️</div>
+                    <strong>CONSOLE</strong>
+                    <span>Para Docker / Kubernetes</span>
+                </div>
+                <div class="appender-box">
+                    <div class="icon">🗃️</div>
+                    <strong>FILE (Rolling)</strong>
+                    <span>Legible (<code>.log</code>). Rota por tamaño/día. ¡No llena el disco!</span>
+                </div>
+                <div class="appender-box">
+                    <div class="icon">📊</div>
+                    <strong>JSON (Logstash)</strong>
+                    <span>Formato Máquina (<code>.json</code>). Para análisis en ELK, Splunk, Datadog.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>
