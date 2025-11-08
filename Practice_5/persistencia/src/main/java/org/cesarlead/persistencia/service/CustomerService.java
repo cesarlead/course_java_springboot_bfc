@@ -3,12 +3,11 @@ package org.cesarlead.persistencia.service;
 import org.cesarlead.persistencia.model.Customer;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CustomerService {
     Customer createCustomer(Customer customer);
 
-    Optional<Customer> getCustomerById(Long id);
+    Customer getCustomerById(Long id);
 
     List<Customer> getAllCustomers();
 

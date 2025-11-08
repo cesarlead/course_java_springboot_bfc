@@ -26,9 +26,8 @@ public class CustomerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
-        return service.getCustomerById(id)
-                .map(customer -> new ResponseEntity<>(customer, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Customer customer = service.getCustomerById(id);
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
     @GetMapping
@@ -38,22 +37,14 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody Customer customerDetails) {
-        try {
-            Customer updatedCustomer = service.updateCustomer(id, customerDetails);
-            return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
-        } catch (RuntimeException e) { // Idealmente ResourceNotFoundException
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Customer updatedCustomer = service.updateCustomer(id, customerDetails);
+        return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
-        try {
-            service.deleteCustomer(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) { // Idealmente ResourceNotFoundException
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        service.deleteCustomer(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/search")

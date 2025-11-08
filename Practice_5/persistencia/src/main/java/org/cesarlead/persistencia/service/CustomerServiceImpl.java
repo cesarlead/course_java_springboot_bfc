@@ -23,8 +23,9 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.save(customer);
     }
 
-    public Optional<Customer> getCustomerById(Long id) {
-        return customerRepository.findById(id);
+    public Customer getCustomerById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
     }
 
     public List<Customer> getAllCustomers() {
@@ -32,13 +33,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public Customer updateCustomer(Long id, Customer customerDetails) {
-        Customer customer = customerRepository.findById(id)
+        return customerRepository.findById(id)
+                .map(customer -> {
+                    customer.setName(customerDetails.getName());
+                    customer.setEmail(customerDetails.getEmail());
+                    return customerRepository.save(customer);
+                })
                 .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
-
-        customer.setName(customerDetails.getName());
-        customer.setEmail(customerDetails.getEmail());
-
-        return customerRepository.save(customer);
     }
 
     public void deleteCustomer(Long id) {
