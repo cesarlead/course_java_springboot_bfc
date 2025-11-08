@@ -15,6 +15,6 @@ public class GreetingService {
 
     public String getGreeting() {
         String data = greetingRepository.getGreetingData();
-        return data + ", ¡ensamblado desde el servicio!";
+        return data + ", ensamblado desde el servicio!";
     }
 }
